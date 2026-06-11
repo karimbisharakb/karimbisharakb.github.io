@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SetPR — Every rep. Every PR. Tracked.</title>
+<meta name="description" content="The strength tracker for lifters who chase numbers. Build your split, log every working set, and watch the numbers climb — automatically." />
+<meta property="og:title" content="SetPR — Every rep. Every PR. Tracked." />
+<meta property="og:description" content="The strength tracker for lifters who chase numbers." />
+<meta property="og:image" content="assets/setpr-icon.png" />
+<link rel="icon" type="image/png" href="assets/setpr-icon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #0A0A0A;
+    --surface: #141415;
+    --surface-2: #1A1A1C;
+    --hairline: rgba(255,255,255,0.09);
+    --hairline-strong: rgba(255,255,255,0.16);
+    --white: #FFFFFF;
+    --muted: #8E8E93;
+    --muted-dim: #636366;
+    --red: #FF3B30;
+    --red-deep: #D70015;
+    --display: "Archivo", system-ui, sans-serif;
+    --body: system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: var(--body);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+
+  ::selection { background: var(--red); color: #fff; }
+
+  a { color: inherit; text-decoration: none; }
+
+  .wrap { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 32px; }
+
+  .eyebrow {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--red);
+  }
+
+  /* ============ NAV ============ */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background .3s ease, border-color .3s ease, backdrop-filter .3s ease;
+    border-bottom: 1px solid transparent;
+  }
+  nav.scrolled {
+    background: rgba(10,10,10,0.72);
+    backdrop-filter: saturate(160%) blur(18px);
+    -webkit-backdrop-filter: saturate(160%) blur(18px);
+    border-bottom: 1px solid var(--hairline);
+  }
+  .nav-inner {
+    width: 100%; max-width: 1200px;
+    padding: 18px 32px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .nav-mark {
+    display: flex; align-items: center; gap: 11px;
+    font-family: var(--display); font-weight: 900; font-size: 20px;
+    letter-spacing: -0.02em;
+  }
+  .nav-links { display: flex; align-items: center; gap: 34px; }
+  .nav-links a {
+    font-size: 14.5px; font-weight: 500; color: var(--muted);
+    transition: color .18s ease;
+  }
+  .nav-links a:hover { color: var(--white); }
+  .nav-cta {
+    font-family: var(--display); font-weight: 700; font-size: 14px;
+    padding: 10px 20px; border-radius: 100px;
+    background: var(--white); color: #0A0A0A !important;
+    transition: transform .18s ease, background .18s ease;
+  }
+  .nav-cta:hover { transform: translateY(-1px); background: #f0f0f0; }
+  @media (max-width: 760px) { .nav-links { display: none; } }
+
+  /* ============ APP ICON (squircle) ============ */
+  .appicon {
+    position: relative;
+    border-radius: 24%;
+    overflow: hidden;
+    display: block;
+    flex: none;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05);
+  }
+  .appicon img {
+    display: block;
+    width: 100%; height: 100%;
+    object-fit: cover;
+  }
+
+  .nav-mark .appicon { width: 30px; height: 30px; }
+
+  /* ============ HERO ============ */
+  header.hero {
+    position: relative;
+    padding: 200px 0 110px;
+    overflow: hidden;
+  }
+  .hero-glow {
+    position: absolute;
+    top: -200px; right: -120px;
+    width: 720px; height: 720px;
+    background: radial-gradient(circle, rgba(255,59,48,0.20) 0%, rgba(255,59,48,0.05) 38%, transparent 68%);
+    pointer-events: none;
+    filter: blur(8px);
+  }
+  .hero-grid {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 40px;
+    align-items: center;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 9px;
+    padding: 7px 14px 7px 8px;
+    border: 1px solid var(--hairline);
+    border-radius: 100px;
+    background: var(--surface);
+    font-size: 13px; color: var(--muted);
+    margin-bottom: 30px;
+  }
+  .hero-badge .dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--red); box-shadow: 0 0 10px var(--red);
+  }
+  .hero h1 {
+    font-family: var(--display);
+    font-weight: 900;
+    font-size: clamp(76px, 12vw, 168px);
+    line-height: 0.86;
+    letter-spacing: -0.045em;
+    margin-bottom: 26px;
+  }
+  .hero h1 .pr { color: var(--red); }
+  .hero .tagline {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: clamp(22px, 3vw, 32px);
+    letter-spacing: -0.02em;
+    line-height: 1.12;
+    margin-bottom: 16px;
+  }
+  .hero .tagline .em { color: var(--red); }
+  .hero .sub {
+    font-size: 18px; line-height: 1.55; color: var(--muted);
+    max-width: 440px; margin-bottom: 38px;
+  }
+  .hero-ctas { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+
+  /* App Store button */
+  .appstore-btn {
+    display: inline-flex; align-items: center; gap: 13px;
+    background: var(--red);
+    padding: 13px 26px 13px 22px;
+    border-radius: 15px;
+    transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+    box-shadow: 0 12px 34px -10px rgba(255,59,48,0.55);
+  }
+  .appstore-btn:hover { transform: translateY(-2px); background: #ff4a40; box-shadow: 0 18px 44px -10px rgba(255,59,48,0.7); }
+  .appstore-btn svg { width: 26px; height: 26px; fill: #fff; flex: none; }
+  .appstore-btn .txt { line-height: 1; text-align: left; }
+  .appstore-btn .txt small { display: block; font-size: 11px; font-weight: 500; opacity: 0.85; margin-bottom: 3px; letter-spacing: 0.02em; }
+  .appstore-btn .txt strong { display: block; font-family: var(--display); font-weight: 800; font-size: 20px; letter-spacing: -0.01em; }
+
+  .ghost-link {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 15px; font-weight: 600; color: var(--white);
+    padding: 13px 6px;
+    transition: gap .18s ease, color .18s ease;
+  }
+  .ghost-link:hover { gap: 12px; color: var(--red); }
+
+  .hero-stats { display: flex; gap: 40px; margin-top: 54px; }
+  .hero-stats .stat .n { font-family: var(--display); font-weight: 800; font-size: 30px; letter-spacing: -0.02em; }
+  .hero-stats .stat .l { font-size: 13px; color: var(--muted); margin-top: 3px; }
+
+  /* hero big app icon */
+  .hero-icon-stage { display: grid; place-items: center; position: relative; }
+  .hero-icon {
+    width: 280px; height: 280px;
+    animation: floaty 6s ease-in-out infinite;
+  }
+  .hero-icon-label {
+    font-family: var(--display); font-weight: 900; font-size: 34px;
+    letter-spacing: -0.03em; margin-top: 26px;
+  }
+  .hero-icon-sub { font-size: 13px; color: var(--muted-dim); margin-top: 4px; letter-spacing: 0.04em; }
+  @keyframes floaty { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-14px); } }
+
+  @media (max-width: 900px) {
+    header.hero { padding: 150px 0 80px; }
+    .hero-grid { grid-template-columns: 1fr; gap: 60px; }
+    .hero-icon { width: 220px; height: 220px; }
+  }
+
+  /* ============ SECTION SHELL ============ */
+  section { position: relative; padding: 120px 0; }
+  .section-head { max-width: 640px; margin-bottom: 64px; }
+  .section-head h2 {
+    font-family: var(--display); font-weight: 800;
+    font-size: clamp(38px, 5.5vw, 64px);
+    line-height: 1.0; letter-spacing: -0.035em;
+    margin-top: 18px;
+  }
+  .section-head p { font-size: 18px; color: var(--muted); margin-top: 18px; line-height: 1.55; }
+
+  /* ============ FEATURES ============ */
+  .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+  .fcard {
+    background: var(--surface);
+    border: 1px solid var(--hairline);
+    border-radius: 22px;
+    padding: 34px 32px 38px;
+    position: relative;
+    overflow: hidden;
+    transition: transform .25s ease, border-color .25s ease, background .25s ease;
+  }
+  .fcard:hover { transform: translateY(-5px); border-color: var(--hairline-strong); background: var(--surface-2); }
+  .fcard .fnum {
+    font-family: var(--display); font-weight: 800; font-size: 13px;
+    color: var(--red); letter-spacing: 0.12em;
+  }
+  .ficon {
+    width: 56px; height: 56px; border-radius: 15px;
+    background: var(--surface-2);
+    border: 1px solid var(--hairline);
+    display: grid; place-items: center;
+    margin: 26px 0 24px;
+  }
+  .ficon svg { width: 28px; height: 28px; stroke: var(--red); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .fcard h3 { font-family: var(--display); font-weight: 800; font-size: 25px; letter-spacing: -0.02em; margin-bottom: 12px; }
+  .fcard p { font-size: 15.5px; line-height: 1.6; color: var(--muted); }
+  .fcard .fline {
+    position: absolute; left: 0; bottom: 0; height: 3px; width: 0;
+    background: var(--red); transition: width .35s ease;
+  }
+  .fcard:hover .fline { width: 100%; }
+  @media (max-width: 860px) { .features { grid-template-columns: 1fr; } }
+
+  /* ============ SCREENSHOTS ============ */
+  .shots-section { background:
+      radial-gradient(120% 80% at 50% 0%, rgba(255,59,48,0.06), transparent 55%); }
+  .phones {
+    display: flex; justify-content: center; align-items: flex-end;
+    gap: 26px; flex-wrap: wrap;
+  }
+  .phone-col { display: flex; flex-direction: column; align-items: center; gap: 22px; }
+  .phone-col.mid { transform: translateY(-26px); }
+  .phone-cap { text-align: center; }
+  .phone-cap .t { font-family: var(--display); font-weight: 700; font-size: 17px; letter-spacing: -0.01em; }
+  .phone-cap .d { font-size: 13.5px; color: var(--muted); margin-top: 4px; }
+
+  /* iPhone shell */
+  .iphone {
+    width: 270px; height: 580px;
+    background: #000;
+    border-radius: 46px;
+    padding: 11px;
+    box-shadow:
+      0 0 0 2px #1c1c1e,
+      0 40px 80px -30px rgba(0,0,0,0.9),
+      0 0 60px -20px rgba(255,59,48,0.12);
+    position: relative;
+    flex: none;
+  }
+  .iphone .screen {
+    width: 100%; height: 100%;
+    background: #0A0A0A;
+    border-radius: 36px;
+    overflow: hidden;
+    position: relative;
+  }
+  .island {
+    position: absolute; top: 11px; left: 50%; transform: translateX(-50%);
+    width: 86px; height: 26px; background: #000; border-radius: 14px; z-index: 5;
+  }
+  .statusbar {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 15px 22px 0; font-size: 12px; font-weight: 600;
+    position: relative; z-index: 4;
+  }
+  .statusbar .ico { display: flex; gap: 5px; align-items: center; }
+  .statusbar .ico span { display: block; }
+  .sig { width: 16px; height: 10px; background: #fff; border-radius: 2px; -webkit-mask: linear-gradient(#000 0 0); }
+  .bat { width: 22px; height: 11px; border: 1.4px solid rgba(255,255,255,0.55); border-radius: 3px; position: relative; }
+  .bat::after { content:""; position:absolute; inset:1.5px; width: 70%; background:#fff; border-radius:1px; }
+  .bat::before { content:""; position:absolute; right:-3px; top:3px; width:2px; height:5px; background:rgba(255,255,255,0.55); border-radius:1px; }
+
+  .app { padding: 16px 18px 18px; height: calc(100% - 38px); display: flex; flex-direction: column; }
+  .app-h { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px; }
+  .app-date { font-size: 11px; color: var(--muted); font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
+  .app-title { font-family: var(--display); font-weight: 800; font-size: 27px; letter-spacing: -0.02em; margin-top: 3px; }
+  .av { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg,#3a3a3c,#1c1c1e); border: 1px solid var(--hairline); }
+
+  /* screen 1 — home */
+  .splitcard {
+    margin-top: 16px; border-radius: 18px; padding: 16px;
+    background: linear-gradient(145deg, #2a0d0a, #160604);
+    border: 1px solid rgba(255,59,48,0.28);
+    position: relative; overflow: hidden;
+  }
+  .splitcard .lbl { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; color: var(--red); text-transform: uppercase; }
+  .splitcard .nm { font-family: var(--display); font-weight: 800; font-size: 22px; margin-top: 6px; }
+  .splitcard .meta { font-size: 12px; color: rgba(255,255,255,0.7); margin-top: 4px; }
+  .splitcard .go { position: absolute; right: 14px; bottom: 14px; width: 34px; height: 34px; border-radius: 50%; background: var(--red); display: grid; place-items: center; }
+  .splitcard .go svg { width: 16px; height: 16px; stroke: #fff; fill: none; stroke-width: 2.4; }
+  .sec-lbl { font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; margin: 20px 2px 10px; }
+  .exrow {
+    display: flex; align-items: center; gap: 12px;
+    padding: 11px 12px; border-radius: 13px; background: var(--surface);
+    border: 1px solid var(--hairline); margin-bottom: 8px;
+  }
+  .exrow .ix { width: 32px; height: 32px; border-radius: 9px; background: var(--surface-2); display: grid; place-items: center; flex: none; }
+  .exrow .ix svg { width: 16px; height: 16px; stroke: var(--red); fill:none; stroke-width: 2; }
+  .exrow .body { flex: 1; min-width: 0; }
+  .exrow .en { font-size: 13.5px; font-weight: 600; }
+  .exrow .es { font-size: 11.5px; color: var(--muted); margin-top: 2px; }
+  .exrow .chk { font-size: 11px; color: var(--muted-dim); font-weight: 600; }
+
+  .startbtn {
+    margin-top: auto; height: 50px; border-radius: 15px;
+    background: var(--red); display: grid; place-items: center;
+    font-family: var(--display); font-weight: 800; font-size: 16px; letter-spacing: -0.01em;
+    box-shadow: 0 10px 24px -8px rgba(255,59,48,0.6);
+  }
+
+  /* screen 2 — logging */
+  .log-ex { font-family: var(--display); font-weight: 800; font-size: 23px; letter-spacing: -0.02em; }
+  .log-prev {
+    display: inline-flex; align-items: center; gap: 6px; margin-top: 7px;
+    font-size: 11.5px; color: var(--muted);
+    background: var(--surface); border: 1px solid var(--hairline);
+    padding: 5px 10px; border-radius: 100px;
+  }
+  .log-prev b { color: var(--red); font-weight: 700; }
+  .setgrid { margin-top: 16px; }
+  .setgrid .hd { display: grid; grid-template-columns: 36px 1fr 1fr 40px; gap: 8px; padding: 0 4px 8px; font-size: 10px; font-weight: 700; color: var(--muted-dim); letter-spacing: 0.08em; text-transform: uppercase; }
+  .setrow {
+    display: grid; grid-template-columns: 36px 1fr 1fr 40px; gap: 8px; align-items: center;
+    padding: 10px 4px; border-radius: 12px; margin-bottom: 6px;
+    background: var(--surface); border: 1px solid var(--hairline);
+  }
+  .setrow.active { background: rgba(255,59,48,0.10); border-color: rgba(255,59,48,0.4); }
+  .setrow .sn { text-align: center; font-family: var(--display); font-weight: 800; font-size: 14px; color: var(--muted); }
+  .setrow.active .sn { color: var(--red); }
+  .setrow .cell { font-family: var(--display); font-weight: 700; font-size: 16px; text-align: center; }
+  .setrow .cell small { font-size: 10px; color: var(--muted); font-weight: 600; margin-left: 2px; }
+  .setrow .done { width: 26px; height: 26px; border-radius: 8px; margin: 0 auto; display: grid; place-items: center; background: var(--red); }
+  .setrow .done svg { width: 14px; height: 14px; stroke: #fff; fill: none; stroke-width: 3; }
+  .setrow .pending { width: 26px; height: 26px; border-radius: 8px; margin: 0 auto; border: 1.6px solid var(--hairline-strong); }
+  .addset { margin-top: 4px; height: 42px; border-radius: 12px; border: 1.4px dashed var(--hairline-strong); display: grid; place-items: center; font-size: 13px; font-weight: 600; color: var(--muted); }
+  .restbar { margin-top: auto; display: flex; align-items: center; justify-content: space-between; padding: 13px 16px; border-radius: 14px; background: var(--surface); border: 1px solid var(--hairline); }
+  .restbar .rl { font-size: 11px; color: var(--muted); }
+  .restbar .rt { font-family: var(--display); font-weight: 800; font-size: 19px; }
+  .restbar .rt .red { color: var(--red); }
+
+  /* screen 3 — progress */
+  .prbanner {
+    margin-top: 16px; border-radius: 16px; padding: 14px 16px;
+    background: linear-gradient(135deg, var(--red), var(--red-deep));
+    display: flex; align-items: center; gap: 12px;
+    box-shadow: 0 12px 28px -12px rgba(255,59,48,0.7);
+  }
+  .prbanner .pi { width: 38px; height: 38px; border-radius: 11px; background: rgba(255,255,255,0.18); display: grid; place-items: center; flex: none; }
+  .prbanner .pi svg { width: 20px; height: 20px; stroke: #fff; fill: none; stroke-width: 2.2; }
+  .prbanner .pl { font-size: 10px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; opacity: 0.85; }
+  .prbanner .pv { font-family: var(--display); font-weight: 800; font-size: 18px; margin-top: 1px; }
+  .chartcard { margin-top: 14px; border-radius: 16px; padding: 16px; background: var(--surface); border: 1px solid var(--hairline); }
+  .chartcard .ct { display: flex; justify-content: space-between; align-items: baseline; }
+  .chartcard .ctt { font-size: 12px; font-weight: 600; color: var(--muted); }
+  .chartcard .cv { font-family: var(--display); font-weight: 800; font-size: 22px; letter-spacing: -0.02em; }
+  .chartcard .cv small { font-size: 12px; color: var(--muted); font-weight: 600; }
+  .chartcard .delta { font-size: 11px; font-weight: 700; color: var(--red); }
+  .chartwrap { margin-top: 12px; }
+  .chartwrap svg { width: 100%; height: 84px; display: block; }
+  .chartx { display: flex; justify-content: space-between; margin-top: 8px; font-size: 9.5px; color: var(--muted-dim); font-weight: 600; }
+  .pstats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+  .pstat { border-radius: 13px; padding: 12px 13px; background: var(--surface); border: 1px solid var(--hairline); }
+  .pstat .pn { font-family: var(--display); font-weight: 800; font-size: 19px; }
+  .pstat .pln { font-size: 10.5px; color: var(--muted); margin-top: 2px; }
+
+  @media (max-width: 620px) {
+    .phone-col.mid { transform: none; }
+    .iphone { width: 240px; height: 516px; }
+  }
+
+  /* ============ PRICING ============ */
+  .pricing-section { background: var(--bg); }
+  .ptiers { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; max-width: 880px; margin: 0 auto; }
+  .ptier {
+    background: var(--surface);
+    border: 1px solid var(--hairline);
+    border-radius: 24px;
+    padding: 38px 34px 36px;
+    position: relative;
+    display: flex; flex-direction: column;
+  }
+  .ptier.premium {
+    border: 1.5px solid var(--red);
+    background: linear-gradient(180deg, rgba(255,59,48,0.06), var(--surface) 40%);
+    box-shadow: 0 30px 70px -34px rgba(255,59,48,0.5);
+  }
+  .pbadge {
+    position: absolute; top: -13px; left: 50%; transform: translateX(-50%);
+    background: var(--red); color: #fff;
+    font-family: var(--display); font-weight: 800; font-size: 11.5px;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 7px 16px; border-radius: 100px;
+    box-shadow: 0 8px 20px -6px rgba(255,59,48,0.7);
+    white-space: nowrap;
+  }
+  .ptier .pname { font-family: var(--display); font-weight: 800; font-size: 22px; letter-spacing: -0.01em; }
+  .ptier .pdesc { font-size: 14px; color: var(--muted); margin-top: 6px; min-height: 40px; }
+  .ptier .pprice { display: flex; align-items: baseline; gap: 6px; margin: 22px 0 4px; }
+  .ptier .pprice .amt { font-family: var(--display); font-weight: 900; font-size: 52px; letter-spacing: -0.035em; }
+  .ptier .pprice .per { font-size: 14px; color: var(--muted); font-weight: 600; }
+  .ptier .ponce { font-size: 12.5px; color: var(--muted); font-weight: 600; }
+  .ptier.premium .ponce { color: var(--red); }
+  .pdiv { height: 1px; background: var(--hairline); margin: 26px 0 22px; }
+  .plist { list-style: none; display: flex; flex-direction: column; gap: 14px; flex: 1; }
+  .plist li { display: flex; align-items: flex-start; gap: 12px; font-size: 14.5px; color: #e7e7ea; line-height: 1.4; }
+  .plist li .tick { width: 20px; height: 20px; border-radius: 50%; flex: none; display: grid; place-items: center; margin-top: 1px; }
+  .plist li .tick svg { width: 11px; height: 11px; stroke: #fff; fill: none; stroke-width: 3; }
+  .plist li.on .tick { background: var(--red); }
+  .plist li.off { color: var(--muted-dim); }
+  .plist li.off .tick { background: var(--surface-2); border: 1px solid var(--hairline); }
+  .plist li.off .tick svg { stroke: var(--muted-dim); }
+  .pbtn {
+    margin-top: 30px; height: 52px; border-radius: 14px;
+    display: grid; place-items: center;
+    font-family: var(--display); font-weight: 800; font-size: 16px; letter-spacing: -0.01em;
+    transition: transform .18s ease, background .18s ease;
+  }
+  .pbtn.free { background: var(--surface-2); border: 1px solid var(--hairline-strong); color: #fff; }
+  .pbtn.free:hover { background: #232325; transform: translateY(-2px); }
+  .pbtn.prem { background: var(--red); color: #fff; box-shadow: 0 14px 32px -12px rgba(255,59,48,0.65); }
+  .pbtn.prem:hover { background: #ff4a40; transform: translateY(-2px); }
+  .pnote { text-align: center; font-size: 13.5px; color: var(--muted); margin-top: 32px; }
+  @media (max-width: 720px) { .ptiers { grid-template-columns: 1fr; } }
+
+  /* ============ FINAL CTA ============ */
+  .finalcta { text-align: center; padding: 120px 0; position: relative; scroll-margin-top: 84px; }
+  .finalcta::before {
+    content: ""; position: absolute; inset: 0;
+    background: radial-gradient(60% 100% at 50% 100%, rgba(255,59,48,0.14), transparent 70%);
+    pointer-events: none;
+  }
+  .finalcta h2 {
+    font-family: var(--display); font-weight: 900;
+    font-size: clamp(44px, 7vw, 96px); line-height: 0.92; letter-spacing: -0.04em;
+    position: relative;
+  }
+  .finalcta h2 .pr { color: var(--red); }
+  .finalcta .sub { font-size: 18px; color: var(--muted); margin: 22px 0 36px; position: relative; }
+  .finalcta .hero-ctas { justify-content: center; }
+
+  /* ============ FOOTER ============ */
+  footer {
+    border-top: 1px solid var(--hairline);
+    padding: 64px 0 40px;
+  }
+  .foot-grid { display: flex; justify-content: space-between; align-items: flex-start; gap: 40px; flex-wrap: wrap; }
+  .foot-brand { max-width: 320px; }
+  .foot-mark { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+  .foot-mark .appicon { width: 40px; height: 40px; }
+  .foot-mark .nm { font-family: var(--display); font-weight: 900; font-size: 22px; letter-spacing: -0.02em; }
+  .foot-brand p { font-size: 14px; color: var(--muted); line-height: 1.55; }
+  .foot-cols { display: flex; gap: 64px; flex-wrap: wrap; }
+  .foot-col h4 { font-family: var(--display); font-weight: 700; font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted-dim); margin-bottom: 16px; }
+  .foot-col a, .foot-col .fitem { display: block; font-size: 14.5px; color: #cfcfd2; margin-bottom: 12px; transition: color .18s ease; }
+  .foot-col a:hover { color: var(--red); }
+  .foot-bottom {
+    margin-top: 56px; padding-top: 26px; border-top: 1px solid var(--hairline);
+    display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap;
+    font-size: 13px; color: var(--muted-dim);
+  }
+  .foot-bottom a { color: var(--muted); }
+  .foot-bottom a:hover { color: var(--white); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-icon { animation: none; }
+    html { scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav id="nav">
+    <div class="nav-inner">
+      <a href="#top" class="nav-mark">
+        <span class="appicon">
+          <img src="assets/setpr-icon.png" alt="SetPR app icon" />
+        </span>
+        SetPR
+      </a>
+      <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#screens">Screens</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#download" class="nav-cta">Download</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="hero" id="top">
+    <div class="hero-glow"></div>
+    <div class="wrap">
+      <div class="hero-grid">
+        <div class="hero-copy reveal">
+          <span class="hero-badge"><span class="dot"></span> Built for lifters who chase numbers</span>
+          <h1>Set<span class="pr">PR</span></h1>
+          <p class="tagline">Every rep. Every <span class="em">PR</span>. Tracked.</p>
+          <p class="sub">The strength tracker for people who actually progress. Build your split, log every working set, and watch the numbers climb — automatically.</p>
+          <div class="hero-ctas">
+            <a href="#" class="appstore-btn" aria-label="Download on the App Store">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v11"/><path d="M7.5 9.5L12 14l4.5-4.5"/><path d="M5 19h14"/></svg>
+              <span class="txt"><small>Download on the</small><strong>App Store</strong></span>
+            </a>
+            <a href="#screens" class="ghost-link">See it in action
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+          </div>
+          <div class="hero-stats">
+            <div class="stat"><div class="n">1RM</div><div class="l">Auto-estimated</div></div>
+            <div class="stat"><div class="n">PR</div><div class="l">Detection built-in</div></div>
+            <div class="stat"><div class="n">$4.99</div><div class="l">One-time. Forever.</div></div>
+          </div>
+        </div>
+
+        <div class="hero-icon-stage reveal">
+          <span class="appicon hero-icon">
+            <img src="assets/setpr-icon.png" alt="SetPR app icon" />
+          </span>
+          <div class="hero-icon-label">SetPR</div>
+          <div class="hero-icon-sub">STRENGTH · TRACKED</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- FEATURES -->
+  <section id="features">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">Why SetPR</span>
+        <h2>Less logging.<br>More lifting.</h2>
+        <p>Three things, done right. No bloat, no social feed, no distractions — just the tools that make you stronger.</p>
+      </div>
+      <div class="features">
+        <div class="fcard reveal">
+          <span class="fnum">01</span>
+          <span class="ficon">
+            <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/><circle cx="19" cy="18" r="2"/></svg>
+          </span>
+          <h3>Build your split</h3>
+          <p>Push/Pull/Legs, Upper/Lower, full body, or something only you understand. Create any training program with the exact exercises, sets, and order you want.</p>
+          <span class="fline"></span>
+        </div>
+        <div class="fcard reveal">
+          <span class="fnum">02</span>
+          <span class="ficon">
+            <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+          </span>
+          <h3>Log every set</h3>
+          <p>Tap in weight and reps for each working set. SetPR shows your last session right beside it, so you always know the number to beat.</p>
+          <span class="fline"></span>
+        </div>
+        <div class="fcard reveal">
+          <span class="fnum">03</span>
+          <span class="ficon">
+            <svg viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg>
+          </span>
+          <h3>Watch yourself grow</h3>
+          <p>Automatic PR detection and 1RM tracking on every lift. The moment you beat a record, you'll know — and the chart will prove it.</p>
+          <span class="fline"></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCREENSHOTS -->
+  <section id="screens" class="shots-section">
+    <div class="wrap">
+      <div class="section-head reveal" style="margin-left:auto;margin-right:auto;text-align:center;">
+        <span class="eyebrow">A look inside</span>
+        <h2>Designed for the gym floor.</h2>
+        <p style="margin-left:auto;margin-right:auto;">Big tap targets. High contrast. Zero friction between sets — exactly what you want with chalk on your hands.</p>
+      </div>
+
+      <div class="phones">
+        <!-- PHONE 1: HOME -->
+        <div class="phone-col reveal">
+          <div class="iphone">
+            <div class="screen">
+              <div class="island"></div>
+              <div class="statusbar">
+                <span>9:41</span>
+                <span class="ico">
+                  <svg width="17" height="11" viewBox="0 0 17 11" fill="#fff"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="4.5" y="5" width="3" height="6" rx="1"/><rect x="9" y="2.5" width="3" height="8.5" rx="1"/><rect x="13.5" y="0" width="3" height="11" rx="1"/></svg>
+                  <span class="bat"></span>
+                </span>
+              </div>
+              <div class="app">
+                <div class="app-h">
+                  <div>
+                    <div class="app-date">Wednesday · Week 3</div>
+                    <div class="app-title">Today</div>
+                  </div>
+                  <div class="av"></div>
+                </div>
+                <div class="splitcard">
+                  <div class="lbl">Up Next</div>
+                  <div class="nm">Push Day</div>
+                  <div class="meta">5 exercises · ~58 min · Chest / Shoulders / Triceps</div>
+                  <div class="go">
+                    <svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>
+                  </div>
+                </div>
+                <div class="sec-lbl">The Plan</div>
+                <div class="exrow">
+                  <span class="ix"><svg viewBox="0 0 24 24"><path d="M6 12h12M4 9v6M20 9v6M8 7v10M16 7v10"/></svg></span>
+                  <span class="body"><div class="en">Barbell Bench Press</div><div class="es">4 sets · last 80kg × 8</div></span>
+                  <span class="chk">4 ×</span>
+                </div>
+                <div class="exrow">
+                  <span class="ix"><svg viewBox="0 0 24 24"><path d="M6 12h12M4 9v6M20 9v6M8 7v10M16 7v10"/></svg></span>
+                  <span class="body"><div class="en">Overhead Press</div><div class="es">4 sets · last 50kg × 6</div></span>
+                  <span class="chk">4 ×</span>
+                </div>
+                <div class="exrow">
+                  <span class="ix"><svg viewBox="0 0 24 24"><path d="M6 12h12M4 9v6M20 9v6M8 7v10M16 7v10"/></svg></span>
+                  <span class="body"><div class="en">Incline Dumbbell Press</div><div class="es">3 sets · last 30kg × 10</div></span>
+                  <span class="chk">3 ×</span>
+                </div>
+                <div class="startbtn">Start Workout</div>
+              </div>
+            </div>
+          </div>
+          <div class="phone-cap">
+            <div class="t">Home</div>
+            <div class="d">Your day, ready to go</div>
+          </div>
+        </div>
+
+        <!-- PHONE 2: LOGGING -->
+        <div class="phone-col mid reveal">
+          <div class="iphone">
+            <div class="screen">
+              <div class="island"></div>
+              <div class="statusbar">
+                <span>9:41</span>
+                <span class="ico">
+                  <svg width="17" height="11" viewBox="0 0 17 11" fill="#fff"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="4.5" y="5" width="3" height="6" rx="1"/><rect x="9" y="2.5" width="3" height="8.5" rx="1"/><rect x="13.5" y="0" width="3" height="11" rx="1"/></svg>
+                  <span class="bat"></span>
+                </span>
+              </div>
+              <div class="app">
+                <div class="app-h">
+                  <div>
+                    <div class="app-date">Push Day · Set 3 of 4</div>
+                    <div class="log-ex">Barbell Bench Press</div>
+                    <span class="log-prev">Last session <b>80kg × 8</b></span>
+                  </div>
+                </div>
+                <div class="setgrid">
+                  <div class="hd"><span>Set</span><span style="text-align:center">Weight</span><span style="text-align:center">Reps</span><span></span></div>
+                  <div class="setrow">
+                    <span class="sn">1</span>
+                    <span class="cell">82.5<small>kg</small></span>
+                    <span class="cell">8</span>
+                    <span class="done"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span>
+                  </div>
+                  <div class="setrow">
+                    <span class="sn">2</span>
+                    <span class="cell">82.5<small>kg</small></span>
+                    <span class="cell">8</span>
+                    <span class="done"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span>
+                  </div>
+                  <div class="setrow active">
+                    <span class="sn">3</span>
+                    <span class="cell">85<small>kg</small></span>
+                    <span class="cell">7</span>
+                    <span class="done"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span>
+                  </div>
+                  <div class="setrow">
+                    <span class="sn">4</span>
+                    <span class="cell" style="color:var(--muted-dim)">85<small>kg</small></span>
+                    <span class="cell" style="color:var(--muted-dim)">—</span>
+                    <span class="pending"></span>
+                  </div>
+                  <div class="addset">+ Add set</div>
+                </div>
+                <div class="restbar">
+                  <span class="rl">Rest timer</span>
+                  <span class="rt"><span class="red">1:24</span> / 2:00</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="phone-cap">
+            <div class="t">Logging</div>
+            <div class="d">Beat last session, set by set</div>
+          </div>
+        </div>
+
+        <!-- PHONE 3: PROGRESS -->
+        <div class="phone-col reveal">
+          <div class="iphone">
+            <div class="screen">
+              <div class="island"></div>
+              <div class="statusbar">
+                <span>9:41</span>
+                <span class="ico">
+                  <svg width="17" height="11" viewBox="0 0 17 11" fill="#fff"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="4.5" y="5" width="3" height="6" rx="1"/><rect x="9" y="2.5" width="3" height="8.5" rx="1"/><rect x="13.5" y="0" width="3" height="11" rx="1"/></svg>
+                  <span class="bat"></span>
+                </span>
+              </div>
+              <div class="app">
+                <div class="app-h">
+                  <div>
+                    <div class="app-date">Progress</div>
+                    <div class="app-title">Bench Press</div>
+                  </div>
+                </div>
+                <div class="prbanner">
+                  <span class="pi"><svg viewBox="0 0 24 24"><path d="M12 2l2.4 5 5.6.8-4 4 1 5.6L12 20l-5 2.4 1-5.6-4-4 5.6-.8z"/></svg></span>
+                  <div>
+                    <div class="pl">New PR</div>
+                    <div class="pv">100kg estimated 1RM</div>
+                  </div>
+                </div>
+                <div class="chartcard">
+                  <div class="ct">
+                    <span class="ctt">Estimated 1RM · 12 weeks</span>
+                    <span class="cv">100<small>kg</small></span>
+                  </div>
+                  <span class="delta">▲ +12kg this cycle</span>
+                  <div class="chartwrap">
+                    <svg viewBox="0 0 240 84" preserveAspectRatio="none">
+                      <defs>
+                        <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stop-color="#FF3B30" stop-opacity="0.32"/>
+                          <stop offset="100%" stop-color="#FF3B30" stop-opacity="0"/>
+                        </linearGradient>
+                      </defs>
+                      <path d="M0,66 L40,60 L80,62 L120,48 L160,40 L200,28 L240,12 L240,84 L0,84 Z" fill="url(#g)"/>
+                      <path d="M0,66 L40,60 L80,62 L120,48 L160,40 L200,28 L240,12" fill="none" stroke="#FF3B30" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      <circle cx="240" cy="12" r="4" fill="#FF3B30"/>
+                      <circle cx="240" cy="12" r="7" fill="#FF3B30" opacity="0.25"/>
+                    </svg>
+                  </div>
+                  <div class="chartx"><span>Wk 1</span><span>Wk 4</span><span>Wk 8</span><span>Now</span></div>
+                </div>
+                <div class="pstats">
+                  <div class="pstat"><div class="pn">85kg × 7</div><div class="pln">Best working set</div></div>
+                  <div class="pstat"><div class="pn">+18%</div><div class="pln">Volume vs. Wk 1</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="phone-cap">
+            <div class="t">Progress</div>
+            <div class="d">PRs detected automatically</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section id="pricing" class="pricing-section">
+    <div class="wrap">
+      <div class="section-head reveal" style="margin-left:auto;margin-right:auto;text-align:center;">
+        <span class="eyebrow">Pricing</span>
+        <h2>One price. No subscription.</h2>
+        <p style="margin-left:auto;margin-right:auto;">Start free. Unlock everything once and keep it forever — the way fitness apps used to be.</p>
+      </div>
+
+      <div class="ptiers">
+        <div class="ptier reveal">
+          <div class="pname">Free</div>
+          <div class="pdesc">Everything you need to start training with intent.</div>
+          <div class="pprice"><span class="amt">$0</span></div>
+          <div class="ponce">Free forever</div>
+          <div class="pdiv"></div>
+          <ul class="plist">
+            <li class="on"><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span>Create up to 2 training splits</li>
+            <li class="on"><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span>Log unlimited workouts</li>
+            <li class="on"><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span>Last-session reference on every set</li>
+            <li class="off"><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span>Progress charts &amp; PR history</li>
+            <li class="off"><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span>Full exercise bank</li>
+          </ul>
+          <a href="#" class="pbtn free">Get Started</a>
+        </div>
+
+        <div class="ptier premium reveal">
+          <span class="pbadge">Most Popular</span>
+          <div class="pname">Premium</div>
+          <div class="pdesc">For lifters serious about long-term progress.</div>
+          <div class="pprice"><span class="amt">$4.99</span></div>
+          <div class="ponce">One-time purchase · yours forever</div>
+          <div class="pdiv"></div>
+          <ul class="plist">
+            <li class="on"><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span><span><b>Unlimited</b> training splits</span></li>
+            <li class="on"><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span>Progress charts for every lift</li>
+            <li class="on"><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span>Full PR &amp; 1RM history</li>
+            <li class="on"><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span>Complete exercise bank</li>
+            <li class="on"><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span>Everything in Free</li>
+          </ul>
+          <a href="#" class="pbtn prem">Unlock Premium</a>
+        </div>
+      </div>
+      <p class="pnote">No accounts to manage. No recurring charges. Pay once, train forever.</p>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="finalcta" id="download">
+    <div class="wrap">
+      <h2 class="reveal">Stop guessing.<br>Start setting <span class="pr">PRs</span>.</h2>
+      <p class="sub reveal">Download SetPR and make every session count.</p>
+      <div class="hero-ctas reveal">
+        <a href="#" class="appstore-btn" aria-label="Download on the App Store">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v11"/><path d="M7.5 9.5L12 14l4.5-4.5"/><path d="M5 19h14"/></svg>
+          <span class="txt"><small>Download on the</small><strong>App Store</strong></span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="wrap">
+      <div class="foot-grid">
+        <div class="foot-brand">
+          <div class="foot-mark">
+            <span class="appicon">
+              <img src="assets/setpr-icon.png" alt="SetPR app icon" />
+            </span>
+            <span class="nm">SetPR</span>
+          </div>
+          <p>The strength tracker for lifters who chase numbers. Every rep. Every PR. Tracked.</p>
+        </div>
+        <div class="foot-cols">
+          <div class="foot-col">
+            <h4>Product</h4>
+            <a href="#features">Features</a>
+            <a href="#screens">Screens</a>
+            <a href="#pricing">Pricing</a>
+            <a href="#download">Download</a>
+          </div>
+          <div class="foot-col">
+            <h4>Support</h4>
+            <a href="mailto:setpr.app@gmail.com">setpr.app@gmail.com</a>
+            <a href="#">Privacy Policy</a>
+          </div>
+        </div>
+      </div>
+      <div class="foot-bottom">
+        <span>© 2026 SetPR. All rights reserved.</span>
+        <span>Made for the gym floor.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // sticky nav
+    const nav = document.getElementById('nav');
+    const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 24);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    // smooth in-page scroll with fixed-nav offset
+    const NAV_OFFSET = 80;
+    document.querySelectorAll('a[href^="#"]').forEach((a) => {
+      a.addEventListener('click', (e) => {
+        const id = a.getAttribute('href');
+        if (id === '#' || id.length < 2) return;
+        const target = document.querySelector(id);
+        if (!target) return;
+        e.preventDefault();
+        const y = target.getBoundingClientRect().top + window.scrollY - NAV_OFFSET;
+        window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+        history.replaceState(null, '', id);
+      });
+    });
+
+    // scroll reveal — base state visible; entrance is a transient WAAPI animation
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const ease = 'cubic-bezier(.2,.7,.2,1)';
+    const playIn = (el, delay) => {
+      if (reduce || !el.animate) return;
+      el.animate(
+        [{ opacity: 0, transform: 'translateY(26px)' }, { opacity: 1, transform: 'none' }],
+        { duration: 700, delay, easing: ease, fill: 'none' }
+      );
+    };
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) {
+          const sibs = [...e.target.parentElement.querySelectorAll(':scope > .reveal')];
+          playIn(e.target, Math.max(0, Math.min(sibs.indexOf(e.target), 2)) * 90);
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+  </script>
+</body>
+</html>
