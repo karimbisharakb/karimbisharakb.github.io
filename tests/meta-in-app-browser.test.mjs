@@ -58,3 +58,10 @@ test('landing page includes GSAP, Anime.js, and React Bits-style enhancement hoo
   assert.match(page, /function applyReactBitsEnhancements\(\)/);
   assert.match(page, /reactbits-magnetic/);
 });
+
+test('landing page uses the supplied phone video as an accessible cinematic hero', () => {
+  assert.match(page, /<video id="hero-video"[^>]*autoplay[^>]*muted[^>]*loop[^>]*playsinline/);
+  assert.match(page, /src="assets\/hero-phone\.mp4"/);
+  assert.match(page, /poster="assets\/hero-phone-poster\.jpg"/);
+  assert.match(page, /aria-label="SetPR app preview"/);
+});

@@ -274,6 +274,20 @@
     background: radial-gradient(circle, rgba(230,57,70,0.28), transparent 60%);
     filter: blur(10px); pointer-events: none;
   }
+  .hero-video-shell {
+    position: relative; z-index: 2; width: min(100%, 520px); aspect-ratio: 1 / 1;
+    overflow: hidden; border: 1px solid rgba(255,255,255,.16); border-radius: 30px;
+    background: #252936; box-shadow: 0 42px 100px -40px rgba(0,0,0,.92), 0 0 0 8px rgba(230,57,70,.035);
+  }
+  .hero-video-shell::before { content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(180deg, rgba(5,5,7,.18), transparent 34%, rgba(5,5,7,.36)), radial-gradient(circle at 50% 50%, transparent 44%, rgba(3,3,4,.34)); }
+  .hero-video-shell::after { content: ''; position: absolute; inset: 13px; z-index: 2; pointer-events: none; border: 1px solid rgba(255,255,255,.12); border-radius: 21px; }
+  #hero-video { width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; filter: saturate(.88) contrast(1.08); }
+  .hero-video-hud { position: absolute; z-index: 3; left: 29px; right: 29px; display: flex; justify-content: space-between; align-items: center; font-size: 10px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: rgba(255,255,255,.8); pointer-events: none; }
+  .hero-video-hud.top { top: 29px; }
+  .hero-video-hud.bottom { bottom: 29px; color: rgba(255,255,255,.6); }
+  .hero-video-hud .rec { display: inline-flex; align-items: center; gap: 7px; color: #fff; }
+  .hero-video-hud .rec::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--red); box-shadow: 0 0 14px var(--red); }
+  .hero-video-hud .time { font-variant-numeric: tabular-nums; }
   .float { animation: floaty 6.5s ease-in-out infinite; }
   @keyframes floaty { 0%,100% { transform: translateY(0) rotate(-1deg); } 50% { transform: translateY(-18px) rotate(1deg); } }
 
@@ -290,6 +304,7 @@
     header.hero { padding: 120px 0 70px; }
     .hero-grid { grid-template-columns: 1fr; gap: 56px; }
     .scroll-cue { display: none; }
+    .hero-video-shell { width: min(100%, 440px); }
   }
 
   /* ============================================================
@@ -559,27 +574,12 @@
 
         <div class="hero-phone-stage" data-parallax="-0.12" data-anim data-d="3">
           <div class="hero-phone-glow"></div>
-          <div class="float">
-            <div class="iphone">
-              <div class="screen">
-                <div class="island"></div>
-                <div class="statusbar"><span>9:41</span><span class="ico"><svg width="17" height="11" viewBox="0 0 17 11" fill="#fff"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="4.5" y="5" width="3" height="6" rx="1"/><rect x="9" y="2.5" width="3" height="8.5" rx="1"/><rect x="13.5" y="0" width="3" height="11" rx="1"/></svg><span class="bat"></span></span></div>
-                <div class="app">
-                  <div class="app-h"><div><div class="app-date">Wednesday · Week 3</div><div class="app-title">Today</div></div><div class="av"></div></div>
-                  <div class="splitcard">
-                    <div class="lbl">Up Next</div>
-                    <div class="nm">Push Day</div>
-                    <div class="meta">5 exercises · ~58 min · Chest / Shoulders / Triceps</div>
-                    <div class="go"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></div>
-                  </div>
-                  <div class="sec-lbl">The Plan</div>
-                  <div class="exrow"><span class="ix"><svg viewBox="0 0 24 24"><path d="M6 12h12M4 9v6M20 9v6M8 7v10M16 7v10"/></svg></span><span class="body"><div class="en">Barbell Bench Press</div><div class="es">4 sets · last 80kg × 8</div></span><span class="chk">4 ×</span></div>
-                  <div class="exrow"><span class="ix"><svg viewBox="0 0 24 24"><path d="M6 12h12M4 9v6M20 9v6M8 7v10M16 7v10"/></svg></span><span class="body"><div class="en">Overhead Press</div><div class="es">4 sets · last 50kg × 6</div></span><span class="chk">4 ×</span></div>
-                  <div class="exrow"><span class="ix"><svg viewBox="0 0 24 24"><path d="M6 12h12M4 9v6M20 9v6M8 7v10M16 7v10"/></svg></span><span class="body"><div class="en">Incline Dumbbell Press</div><div class="es">3 sets · last 30kg × 10</div></span><span class="chk">3 ×</span></div>
-                  <div class="startbtn">Start Workout</div>
-                </div>
-              </div>
-            </div>
+          <div class="hero-video-shell">
+            <video id="hero-video" autoplay muted loop playsinline preload="metadata" poster="assets/hero-phone-poster.jpg" aria-label="SetPR app preview">
+              <source src="assets/hero-phone.mp4" type="video/mp4" />
+            </video>
+            <div class="hero-video-hud top"><span class="rec">Live session</span><span>SetPR / 01</span></div>
+            <div class="hero-video-hud bottom"><span>Build your next PR</span><span class="time">00:06</span></div>
           </div>
         </div>
       </div>
@@ -761,6 +761,16 @@
     (function () {
       const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       const ease = 'cubic-bezier(.2,.75,.2,1)';
+      const heroVideo = document.getElementById('hero-video');
+      const heroVideoTime = document.querySelector('.hero-video-hud .time');
+
+      if (reduce) {
+        heroVideo.pause();
+      } else {
+        heroVideo.addEventListener('timeupdate', () => {
+          heroVideoTime.textContent = `00:${String(Math.ceil(heroVideo.currentTime)).padStart(2, '0')}`;
+        });
+      }
 
       // ---------- META IN-APP BROWSER TIP ----------
       const isMetaInAppBrowser = (userAgent = '') => /Instagram|FBAN|FBAV/i.test(userAgent);
