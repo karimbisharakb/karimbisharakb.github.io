@@ -1,6 +1,12 @@
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
 import test from 'node:test';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { isMetaInAppBrowser } from '../assets/meta-in-app-browser.mjs';
+
+const testDirectory = path.dirname(fileURLToPath(import.meta.url));
+const page = fs.readFileSync(path.join(testDirectory, '..', 'index.html'), 'utf8');
 
 const instagramIOS =
   'Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 Instagram 385.0.0.42.71 (iPhone17,1; iOS 18_5; en_US; en-US; scale=3.00; 1206x2622; 751685238)';
@@ -23,4 +29,16 @@ test('does not detect regular iOS browsers', () => {
   assert.equal(isMetaInAppBrowser(mobileSafari), false);
   assert.equal(isMetaInAppBrowser(chromeIOS), false);
   assert.equal(isMetaInAppBrowser(), false);
+});
+
+test('landing page includes the accessible Meta browser fallback and keeps the App Store links', () => {
+  assert.match(page, /id="meta-browser-banner"/);
+  assert.match(page, /role="status"/);
+  assert.match(page, /tap ··· in the top right, then ‘Open in Browser’/);
+  assert.match(page, /aria-label="Dismiss browser tip"/);
+  assert.match(page, /sessionStorage\.setItem\('setpr-meta-browser-banner-dismissed', 'true'\)/);
+  assert.equal(
+    (page.match(/https:\/\/apps\.apple\.com\/app\/setpr-lift-tracker\/id6778556303/g) || []).length,
+    2,
+  );
 });

@@ -423,6 +423,32 @@
   .foot-bottom a { color: var(--muted); }
   .foot-bottom a:hover { color: #fff; }
 
+  /* META IN-APP BROWSER TIP */
+  .meta-browser-banner {
+    position: fixed; top: 76px; left: 50%; z-index: 150;
+    width: min(560px, calc(100% - 28px)); transform: translateX(-50%);
+    display: none; align-items: center; gap: 12px; padding: 12px 14px 12px 16px;
+    background: rgba(18,18,19,.96); border: 1px solid rgba(230,57,70,.42);
+    border-radius: 14px; box-shadow: 0 18px 42px rgba(0,0,0,.36); color: #f5f5f5;
+  }
+  .meta-browser-banner.is-visible { display: flex; }
+  .meta-browser-banner .menu-cue {
+    flex: none; color: var(--red); font-size: 21px; font-weight: 800;
+    letter-spacing: 1px; transform: translateY(-2px);
+  }
+  .meta-browser-banner p { flex: 1; font-size: 13px; line-height: 1.4; }
+  .meta-browser-banner button {
+    width: 30px; height: 30px; flex: none; border: 0; border-radius: 8px;
+    background: transparent; color: var(--muted); cursor: pointer;
+    font: inherit; font-size: 21px; line-height: 1;
+  }
+  .meta-browser-banner button:hover,
+  .meta-browser-banner button:focus-visible { background: var(--surface-2); color: #fff; outline: none; }
+  @media (max-width: 520px) {
+    .meta-browser-banner { top: 66px; align-items: flex-start; }
+    .meta-browser-banner p { font-size: 12.5px; }
+  }
+
   /* ============================================================
      SCROLL REVEAL (base state visible; entrance is transient WAAPI)
      ============================================================ */
@@ -459,6 +485,12 @@
     </div>
     <div class="loader-skip">Click to skip</div>
   </div>
+
+  <aside id="meta-browser-banner" class="meta-browser-banner" role="status" aria-label="Open in browser tip" hidden>
+    <span class="menu-cue" aria-hidden="true">··· ↗</span>
+    <p>For the best experience, tap ··· in the top right, then ‘Open in Browser’.</p>
+    <button type="button" aria-label="Dismiss browser tip">×</button>
+  </aside>
 
   <!-- ===================== NAV ===================== -->
   <nav id="nav">
@@ -701,10 +733,28 @@
     </div>
   </footer>
 
-  <script>
+  <script type="module">
+    import { isMetaInAppBrowser } from './assets/meta-in-app-browser.mjs';
+
     (function () {
       const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       const ease = 'cubic-bezier(.2,.75,.2,1)';
+
+      // ---------- META IN-APP BROWSER TIP ----------
+      const metaBanner = document.getElementById('meta-browser-banner');
+      const metaBannerDismissalKey = 'setpr-meta-browser-banner-dismissed';
+      const hasDismissedMetaBanner = sessionStorage.getItem(metaBannerDismissalKey) === 'true';
+
+      if (isMetaInAppBrowser(navigator.userAgent) && !hasDismissedMetaBanner) {
+        metaBanner.hidden = false;
+        metaBanner.classList.add('is-visible');
+      }
+
+      metaBanner.querySelector('button').addEventListener('click', () => {
+        metaBanner.classList.remove('is-visible');
+        metaBanner.hidden = true;
+        sessionStorage.setItem('setpr-meta-browser-banner-dismissed', 'true');
+      });
 
       // ---------- LOADER ----------
       const loader = document.getElementById('loader');
