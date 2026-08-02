@@ -16,6 +16,13 @@ const browser = await chromium.launch({
 });
 
 try {
+  const filePage = await browser.newPage();
+  await filePage.goto('file:///Users/karimbishara/gym-app/landing/index.html');
+  await filePage.waitForTimeout(4600);
+  assert.equal(await filePage.locator('#loader').evaluate((element) => getComputedStyle(element).display), 'none');
+  assert.equal(await filePage.locator('body').getAttribute('class'), '');
+  await filePage.close();
+
   const instagramContext = await browser.newContext({
     userAgent: instagramIOS,
     viewport: { width: 390, height: 844 },

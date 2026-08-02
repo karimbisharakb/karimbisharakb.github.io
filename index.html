@@ -733,14 +733,13 @@
     </div>
   </footer>
 
-  <script type="module">
-    import { isMetaInAppBrowser } from './assets/meta-in-app-browser.mjs';
-
+  <script>
     (function () {
       const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       const ease = 'cubic-bezier(.2,.75,.2,1)';
 
       // ---------- META IN-APP BROWSER TIP ----------
+      const isMetaInAppBrowser = (userAgent = '') => /Instagram|FBAN|FBAV/i.test(userAgent);
       const metaBanner = document.getElementById('meta-browser-banner');
       const metaBannerDismissalKey = 'setpr-meta-browser-banner-dismissed';
       const hasDismissedMetaBanner = sessionStorage.getItem(metaBannerDismissalKey) === 'true';
