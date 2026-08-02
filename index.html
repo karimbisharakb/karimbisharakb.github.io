@@ -220,6 +220,8 @@
   .hero-system::before { content: ''; width: 28px; height: 1px; background: var(--red); box-shadow: 8px 0 0 rgba(230,57,70,.24); }
   .hero-system .live { display: inline-flex; align-items: center; gap: 6px; color: #dadadd; }
   .hero-system .live i { width: 6px; height: 6px; border-radius: 50%; background: var(--red); box-shadow: 0 0 0 0 rgba(230,57,70,.55); animation: livePulse 1.8s ease-out infinite; }
+  .anime-meter { width: 42px; height: 4px; overflow: hidden; border-radius: 999px; background: rgba(255,255,255,.12); }
+  .anime-meter i { display: block; width: 100%; height: 100%; border-radius: inherit; background: var(--red); transform-origin: left center; }
   @keyframes livePulse { 70% { box-shadow: 0 0 0 7px rgba(230,57,70,0); } 100% { box-shadow: 0 0 0 0 rgba(230,57,70,0); } }
   .hero h1 {
     font-weight: 800;
@@ -256,6 +258,7 @@
   .appstore-btn.on-dark { background: var(--red); color: #fff; box-shadow: 0 14px 36px -12px rgba(230,57,70,0.7); }
   .appstore-btn.on-dark svg { fill: #fff; }
   .appstore-btn.on-dark:hover { background: var(--red-bright); }
+  .reactbits-magnetic { will-change: transform; }
 
   .ghost-link {
     display: inline-flex; align-items: center; gap: 8px;
@@ -530,7 +533,7 @@
         <div class="hero-copy">
           <span class="hero-badge" data-anim><span class="dot"></span> Free on the App Store</span>
           <div class="hero-system" data-motion>
-            <span class="live"><i></i> Training system online</span><span>Build · track · progress</span>
+            <span class="live"><i></i> Training system online</span><span class="anime-meter" aria-hidden="true"><i></i></span><span>Build · track · progress</span>
           </div>
           <h1>
             <span class="line" data-anim data-d="0"><span>Every rep.</span></span>
@@ -539,7 +542,7 @@
           </h1>
           <p class="sub" data-anim data-d="3">The strength tracker for people who actually progress. Build your split, log every working set, and watch the numbers climb — automatically.</p>
           <div class="hero-ctas" data-anim data-d="4">
-            <a href="https://apps.apple.com/app/setpr-lift-tracker/id6778556303" class="appstore-btn" aria-label="Download on the App Store">
+            <a href="https://apps.apple.com/app/setpr-lift-tracker/id6778556303" class="appstore-btn reactbits-magnetic" aria-label="Download on the App Store">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.05 12.04c-.02-2.05 1.68-3.04 1.76-3.09-.96-1.4-2.45-1.6-2.98-1.62-1.27-.13-2.48.75-3.12.75-.64 0-1.64-.73-2.7-.71-1.39.02-2.67.81-3.38 2.05-1.44 2.5-.37 6.2 1.03 8.23.69.99 1.51 2.1 2.58 2.06 1.04-.04 1.43-.67 2.69-.67 1.25 0 1.61.67 2.7.65 1.12-.02 1.83-1.01 2.51-2.01.79-1.15 1.12-2.26 1.14-2.32-.03-.01-2.18-.84-2.2-3.32zM15.0 6.21c.57-.69.95-1.65.85-2.61-.82.03-1.81.55-2.39 1.23-.52.6-.98 1.57-.86 2.5.91.07 1.84-.46 2.4-1.12z"/></svg>
               <span class="txt"><small>Download on the</small><strong>App Store</strong></span>
             </a>
@@ -716,7 +719,7 @@
       <h2 data-anim data-d="1">Stop guessing.<br>Start setting <span class="red">PRs</span>.</h2>
       <p class="sub" data-anim data-d="2">Download SetPR and make every session count. Free on the App Store.</p>
       <div class="hero-ctas" data-anim data-d="3">
-        <a href="https://apps.apple.com/app/setpr-lift-tracker/id6778556303" class="appstore-btn on-dark" aria-label="Download on the App Store">
+        <a href="https://apps.apple.com/app/setpr-lift-tracker/id6778556303" class="appstore-btn on-dark reactbits-magnetic" aria-label="Download on the App Store">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.05 12.04c-.02-2.05 1.68-3.04 1.76-3.09-.96-1.4-2.45-1.6-2.98-1.62-1.27-.13-2.48.75-3.12.75-.64 0-1.64-.73-2.7-.71-1.39.02-2.67.81-3.38 2.05-1.44 2.5-.37 6.2 1.03 8.23.69.99 1.51 2.1 2.58 2.06 1.04-.04 1.43-.67 2.69-.67 1.25 0 1.61.67 2.7.65 1.12-.02 1.83-1.01 2.51-2.01.79-1.15 1.12-2.26 1.14-2.32-.03-.01-2.18-.84-2.2-3.32zM15.0 6.21c.57-.69.95-1.65.85-2.61-.82.03-1.81.55-2.39 1.23-.52.6-.98 1.57-.86 2.5.91.07 1.84-.46 2.4-1.12z"/></svg>
           <span class="txt"><small>Download on the</small><strong>App Store</strong></span>
         </a>
@@ -751,6 +754,9 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/motion@12.42.2/dist/motion.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.15/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.15/dist/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/animejs/dist/bundles/anime.umd.min.js"></script>
   <script>
     (function () {
       const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -800,6 +806,51 @@
         animate('[data-motion]', { opacity: [0, 1], y: [14, 0] }, { delay: stagger(0.12), duration: 0.7, ease: 'ease-out' });
       }
 
+      function applyGsapScrollEnhancements() {
+        if (reduce || !window.gsap || !window.ScrollTrigger) return;
+        gsap.registerPlugin(ScrollTrigger);
+        gsap.from('.fcard', {
+          opacity: 0,
+          y: 46,
+          duration: 0.72,
+          ease: 'power3.out',
+          stagger: 0.1,
+          scrollTrigger: { trigger: '#features', start: 'top 72%', once: true },
+        });
+        gsap.from('.phone-col', {
+          opacity: 0,
+          y: 54,
+          duration: 0.8,
+          ease: 'power3.out',
+          stagger: 0.12,
+          scrollTrigger: { trigger: '#screens', start: 'top 68%', once: true },
+        });
+      }
+
+      function applyAnimeEnhancements() {
+        if (reduce || !window.anime) return;
+        anime.animate('.anime-meter i', {
+          scaleX: [0.18, 1, 0.54],
+          duration: 1800,
+          ease: 'inOut(3)',
+          loop: true,
+          alternate: true,
+        });
+      }
+
+      function applyReactBitsEnhancements() {
+        if (reduce) return;
+        document.querySelectorAll('.reactbits-magnetic').forEach((button) => {
+          button.addEventListener('pointermove', (event) => {
+            const rect = button.getBoundingClientRect();
+            const x = ((event.clientX - rect.left) / rect.width - 0.5) * 10;
+            const y = ((event.clientY - rect.top) / rect.height - 0.5) * 8;
+            button.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+          });
+          button.addEventListener('pointerleave', () => { button.style.transform = ''; });
+        });
+      }
+
       // ---------- HERO reveal (after loader) ----------
       function revealHero() {
         const hero = document.querySelector('header.hero');
@@ -810,6 +861,9 @@
       }
       if (reduce) revealHero();
       applyMotionEnhancements();
+      applyGsapScrollEnhancements();
+      applyAnimeEnhancements();
+      applyReactBitsEnhancements();
 
       // ---------- scroll reveal for the rest ----------
       const io = new IntersectionObserver((entries) => {

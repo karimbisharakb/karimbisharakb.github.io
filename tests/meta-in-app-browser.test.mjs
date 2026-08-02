@@ -48,3 +48,13 @@ test('landing page uses a pinned Motion enhancement without a blocking intro', (
   assert.match(page, /class="hero-system"/);
   assert.match(page, /function applyMotionEnhancements\(\)/);
 });
+
+test('landing page includes GSAP, Anime.js, and React Bits-style enhancement hooks', () => {
+  assert.match(page, /gsap@3\.15\/dist\/gsap\.min\.js/);
+  assert.match(page, /gsap@3\.15\/dist\/ScrollTrigger\.min\.js/);
+  assert.match(page, /animejs\/dist\/bundles\/anime\.umd\.min\.js/);
+  assert.match(page, /function applyGsapScrollEnhancements\(\)/);
+  assert.match(page, /function applyAnimeEnhancements\(\)/);
+  assert.match(page, /function applyReactBitsEnhancements\(\)/);
+  assert.match(page, /reactbits-magnetic/);
+});
