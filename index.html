@@ -51,7 +51,7 @@
   #loader {
     position: fixed; inset: 0; z-index: 1000;
     background: var(--bg);
-    display: grid; place-items: center;
+    display: none; place-items: center;
     cursor: pointer;
     transition: clip-path 0.9s cubic-bezier(.76,0,.24,1), opacity .5s ease;
     clip-path: inset(0 0 0 0);
@@ -205,12 +205,22 @@
     position: relative; z-index: 2;
     display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 30px; align-items: center; width: 100%;
   }
+  .hero-grid::before {
+    content: ''; position: absolute; left: -10vw; top: -24vh; width: 70vw; height: 82vh;
+    background: radial-gradient(circle at var(--spotlight-x, 50%) var(--spotlight-y, 50%), rgba(230,57,70,.17), transparent 31%);
+    pointer-events: none; filter: blur(10px); opacity: .9;
+  }
   .hero-badge {
     display: inline-flex; align-items: center; gap: 9px;
     padding: 7px 15px 7px 9px; border: 1px solid var(--hairline); border-radius: 100px;
     background: rgba(255,255,255,0.03); font-size: 13px; color: var(--muted); margin-bottom: 28px;
   }
   .hero-badge .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--red); box-shadow: 0 0 12px var(--red); }
+  .hero-system { display: flex; align-items: center; gap: 10px; margin-bottom: 22px; color: var(--muted-dim); font-size: 10px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; }
+  .hero-system::before { content: ''; width: 28px; height: 1px; background: var(--red); box-shadow: 8px 0 0 rgba(230,57,70,.24); }
+  .hero-system .live { display: inline-flex; align-items: center; gap: 6px; color: #dadadd; }
+  .hero-system .live i { width: 6px; height: 6px; border-radius: 50%; background: var(--red); box-shadow: 0 0 0 0 rgba(230,57,70,.55); animation: livePulse 1.8s ease-out infinite; }
+  @keyframes livePulse { 70% { box-shadow: 0 0 0 7px rgba(230,57,70,0); } 100% { box-shadow: 0 0 0 0 rgba(230,57,70,0); } }
   .hero h1 {
     font-weight: 800;
     font-size: clamp(52px, 7.4vw, 104px);
@@ -228,6 +238,8 @@
   .hero-stats .n { font-weight: 800; font-size: 28px; letter-spacing: -0.02em; }
   .hero-stats .n .red { color: var(--red); }
   .hero-stats .l { font-size: 13px; color: var(--muted); margin-top: 4px; }
+  .hero-phone-stage::after { content: ''; position: absolute; inset: 5% -12%; border: 1px solid rgba(230,57,70,.12); border-radius: 50%; pointer-events: none; transform: rotate(-16deg); animation: orbitDrift 7s ease-in-out infinite alternate; }
+  @keyframes orbitDrift { to { transform: rotate(-9deg) scale(1.04); } }
 
   /* App Store badge */
   .appstore-btn {
@@ -380,6 +392,8 @@
   .fcard p { font-size: 15.5px; line-height: 1.6; color: var(--muted); }
   .fline { position: absolute; left: 0; bottom: 0; height: 3px; width: 0; background: var(--red); transition: width .4s ease; }
   .fcard:hover .fline { width: 100%; }
+  .fcard::before { content: ''; position: absolute; inset: 0; opacity: 0; pointer-events: none; background: radial-gradient(380px circle at var(--card-x, 50%) var(--card-y, 0%), rgba(230,57,70,.15), transparent 45%); transition: opacity .3s ease; }
+  .fcard:hover::before { opacity: 1; }
   @media (max-width: 860px) { .features { grid-template-columns: 1fr; } }
 
   /* SCREENS showcase */
@@ -460,7 +474,7 @@
   }
 </style>
 </head>
-<body class="loading">
+<body>
 
   <!-- ===================== LOADER ===================== -->
   <div id="loader" aria-hidden="true">
@@ -515,6 +529,9 @@
       <div class="hero-grid">
         <div class="hero-copy">
           <span class="hero-badge" data-anim><span class="dot"></span> Free on the App Store</span>
+          <div class="hero-system" data-motion>
+            <span class="live"><i></i> Training system online</span><span>Build · track · progress</span>
+          </div>
           <h1>
             <span class="line" data-anim data-d="0"><span>Every rep.</span></span>
             <span class="line" data-anim data-d="1"><span>Every <span class="red">PR</span>.</span></span>
@@ -733,6 +750,7 @@
     </div>
   </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/motion@12.42.2/dist/motion.js"></script>
   <script>
     (function () {
       const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -763,15 +781,9 @@
         loader.classList.add('done');
         document.body.classList.remove('loading');
         revealHero();
-        setTimeout(() => { loader.style.display = 'none'; }, 950);
-      }
-      if (reduce) {
         loader.style.display = 'none';
-        document.body.classList.remove('loading');
-      } else {
-        loader.addEventListener('click', finishLoad);
-        setTimeout(finishLoad, 3450);
       }
+      finishLoad();
 
       // ---------- entrance helper ----------
       function playIn(el, delay) {
@@ -780,6 +792,12 @@
           [{ opacity: 0, transform: 'translateY(30px)' }, { opacity: 1, transform: 'none' }],
           { duration: 760, delay: delay || 0, easing: ease, fill: 'none' }
         );
+      }
+
+      function applyMotionEnhancements() {
+        if (reduce || !window.Motion) return;
+        const { animate, stagger } = window.Motion;
+        animate('[data-motion]', { opacity: [0, 1], y: [14, 0] }, { delay: stagger(0.12), duration: 0.7, ease: 'ease-out' });
       }
 
       // ---------- HERO reveal (after loader) ----------
@@ -791,6 +809,7 @@
         });
       }
       if (reduce) revealHero();
+      applyMotionEnhancements();
 
       // ---------- scroll reveal for the rest ----------
       const io = new IntersectionObserver((entries) => {
@@ -831,6 +850,21 @@
       window.addEventListener('scroll', onScroll, { passive: true });
       window.addEventListener('resize', applyParallax);
       if (!reduce) applyParallax();
+
+      // ---------- POLISHED POINTER DEPTH ----------
+      const heroGrid = document.querySelector('.hero-grid');
+      heroGrid.addEventListener('pointermove', (event) => {
+        const rect = heroGrid.getBoundingClientRect();
+        heroGrid.style.setProperty('--spotlight-x', `${((event.clientX - rect.left) / rect.width) * 100}%`);
+        heroGrid.style.setProperty('--spotlight-y', `${((event.clientY - rect.top) / rect.height) * 100}%`);
+      });
+      document.querySelectorAll('.fcard').forEach((card) => {
+        card.addEventListener('pointermove', (event) => {
+          const rect = card.getBoundingClientRect();
+          card.style.setProperty('--card-x', `${event.clientX - rect.left}px`);
+          card.style.setProperty('--card-y', `${event.clientY - rect.top}px`);
+        });
+      });
 
       // ---------- smooth anchor scroll with nav offset ----------
       document.querySelectorAll('a[href^="#"]').forEach((a) => {

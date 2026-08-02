@@ -42,3 +42,9 @@ test('landing page includes the accessible Meta browser fallback and keeps the A
     2,
   );
 });
+
+test('landing page uses a pinned Motion enhancement without a blocking intro', () => {
+  assert.match(page, /motion@12\.42\.2\/dist\/motion\.js/);
+  assert.match(page, /class="hero-system"/);
+  assert.match(page, /function applyMotionEnhancements\(\)/);
+});
