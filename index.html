@@ -18,7 +18,10 @@
     --red: #E63946;
     --red-bright: #ff4d5a;
     --red-deep: #b51f2c;
+    --gold: #F5B942;
+    --gold-bright: #FFD877;
     --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, "Segoe UI", Roboto, sans-serif;
+    --font-mono: "SF Mono", "JetBrains Mono", ui-monospace, "Roboto Mono", monospace;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -204,6 +207,7 @@
   .hero-grid {
     position: relative; z-index: 2;
     display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 30px; align-items: center; width: 100%;
+    margin-top: var(--meta-banner-space, 0px); transition: margin-top .25s ease;
   }
   .hero-grid::before {
     content: ''; position: absolute; left: -10vw; top: -24vh; width: 70vw; height: 82vh;
@@ -385,6 +389,118 @@
   .pstat .pln { font-size: 10.5px; color: var(--muted); margin-top: 3px; }
 
   /* ============================================================
+     DISASSEMBLE (scroll-driven hero teardown)
+     ============================================================ */
+  .disassemble { padding-bottom: 60px; }
+  .da-stage {
+    display: flex; flex-direction: column; align-items: center; gap: 52px;
+    padding: 20px 24px 10px;
+  }
+  .da-phone { margin: 0 auto; }
+  .da-phone .screen img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
+  .da-part {
+    display: flex; align-items: center; gap: 18px; max-width: 520px; width: 100%; opacity: 1;
+  }
+  .da-part img {
+    width: 200px; border-radius: 16px; flex: none; display: block;
+    box-shadow: 0 20px 44px -20px rgba(0,0,0,.7); border: 1px solid var(--hairline);
+  }
+  .da-part--pr img { width: 150px; border-radius: 100px; }
+  .da-callout { font-size: 16px; font-weight: 600; color: var(--white); line-height: 1.35; }
+  .da-callout-num {
+    display: block; font-size: 11px; font-weight: 800; color: var(--red);
+    letter-spacing: .14em; margin-bottom: 5px;
+  }
+  .da-coach-card {
+    width: 200px; flex: none; border-radius: 18px; padding: 15px 16px 17px;
+    background: var(--surface); border: 1px dashed var(--hairline-strong); position: relative;
+  }
+  .da-concept-tag {
+    display: inline-block; font-size: 9px; font-weight: 800; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--muted); background: var(--surface-2);
+    border: 1px solid var(--hairline); padding: 4px 8px; border-radius: 100px; margin-bottom: 12px;
+  }
+  .da-coach-icon { display: block; font-size: 20px; color: var(--red); margin-bottom: 8px; }
+  .da-coach-msg { font-size: 13px; line-height: 1.4; color: var(--white); font-style: italic; }
+
+  /* desktop scroll-pin enhancement (added by JS when GSAP + ScrollTrigger + viewport allow it) */
+  .disassemble.is-desktop-fx .da-stage {
+    position: relative; min-height: 100vh; overflow: visible;
+    margin-top: var(--meta-banner-space, 0px);
+  }
+  .disassemble.is-desktop-fx .da-phone { position: relative; z-index: 2; }
+  .disassemble.is-desktop-fx .da-part {
+    position: absolute; top: 50%; left: 50%; max-width: 460px; will-change: transform, opacity;
+  }
+  .disassemble.is-desktop-fx .da-part img { width: 160px; }
+  .disassemble.is-desktop-fx .da-part--pr img { width: 120px; }
+  .disassemble.is-desktop-fx .da-coach-card { width: 160px; }
+  .disassemble.is-desktop-fx .da-callout { width: 210px; flex: none; }
+
+  @media (max-width: 640px) {
+    .da-part { flex-direction: column; text-align: center; gap: 12px; }
+    .da-part img { width: 170px; }
+    .da-part--pr img { width: 130px; }
+  }
+
+  /* ============================================================
+     BARBELL (scroll-driven number readout)
+     ============================================================ */
+  .barbell-hero { position: relative; overflow: hidden; }
+  .bb-stage {
+    display: flex; flex-direction: column; align-items: center; gap: 40px;
+    padding: 10px 24px 20px;
+  }
+
+  .bb-readout { display: flex; align-items: baseline; gap: 12px; font-family: var(--font-mono); }
+  .bb-num {
+    font-size: clamp(64px, 13vw, 160px); font-weight: 700; letter-spacing: -0.01em;
+    font-variant-numeric: tabular-nums; line-height: 1; color: var(--gold);
+    text-shadow: 0 0 40px rgba(245,185,66,.35);
+  }
+  .bb-unit {
+    font-size: clamp(16px, 2vw, 24px); font-weight: 700; letter-spacing: .12em;
+    color: var(--muted); text-transform: uppercase;
+  }
+
+  .bb-rig { display: flex; align-items: center; justify-content: center; width: 100%; max-width: 1200px; }
+  .bb-bar { width: min(26vw, 440px); flex: none; display: block; position: relative; z-index: 1; }
+  .bb-plates { display: flex; align-items: center; gap: 6px; }
+  .bb-plates--left { flex-direction: row-reverse; }
+  .bb-plate { width: min(5.5vw, 76px); flex: none; display: block; }
+  .bb-rig { filter: drop-shadow(0 0 46px rgba(245,185,66,.28)); transition: filter .6s ease; }
+  .barbell-hero:not(.is-gold) .bb-rig { filter: drop-shadow(0 0 0 rgba(245,185,66,0)); }
+
+  .bb-captions { position: relative; min-height: 32px; text-align: center; }
+  .bb-caption {
+    font-size: 18px; font-weight: 600; color: var(--white); opacity: 1;
+  }
+  .bb-caption-num {
+    display: inline-block; font-size: 12px; font-weight: 800; color: var(--red);
+    letter-spacing: .14em; margin-right: 10px; font-family: var(--font-mono);
+  }
+  .barbell-hero.is-desktop-fx .bb-num { color: var(--red); text-shadow: none; }
+  .barbell-hero.is-desktop-fx .bb-captions { position: absolute; width: 100%; left: 0; }
+  .barbell-hero.is-desktop-fx .bb-caption { position: absolute; left: 0; right: 0; opacity: 0; }
+
+  .bb-flash {
+    position: absolute; inset: 0; pointer-events: none; opacity: 0; z-index: 5;
+    background: radial-gradient(circle at 50% 55%, rgba(255,216,119,.9), rgba(245,185,66,.4) 46%, transparent 74%);
+  }
+
+  .barbell-hero.is-desktop-fx .bb-stage {
+    min-height: 100vh; justify-content: center; position: relative;
+    margin-top: var(--meta-banner-space, 0px);
+  }
+
+  @media (max-width: 760px) {
+    .bb-bar { width: clamp(70px, 24vw, 140px); }
+    .bb-plate { width: clamp(16px, 6vw, 30px); }
+    .bb-plates { gap: 4px; }
+    .bb-captions { display: flex; flex-direction: column; gap: 10px; }
+  }
+
+  /* ============================================================
      SECTIONS
      ============================================================ */
   section { position: relative; padding: 130px 0; }
@@ -438,6 +554,16 @@
   .download .sub { font-size: 19px; color: var(--muted); margin: 26px auto 42px; max-width: 460px; position: relative; z-index: 2; }
   .download .hero-ctas { justify-content: center; position: relative; z-index: 2; }
   .download .free-pill { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 30px; padding: 8px 16px; border: 1px solid rgba(230,57,70,0.35); background: rgba(230,57,70,0.08); border-radius: 100px; font-size: 13px; font-weight: 600; color: var(--red); position: relative; z-index: 2; }
+  .download-barbell {
+    position: absolute; left: 50%; top: 6%; transform: translateX(-50%);
+    display: flex; align-items: center; justify-content: center;
+    width: 100%; max-width: 900px; opacity: .16; pointer-events: none; z-index: 1;
+    filter: drop-shadow(0 0 60px rgba(245,185,66,.4));
+  }
+  .download-barbell .bb-bar { width: min(20vw, 320px); }
+  .download-barbell .bb-plate { width: min(4vw, 56px); flex: none; }
+  .download-barbell .bb-plates { gap: 6px; }
+  @media (max-width: 760px) { .download-barbell { display: none; } }
 
   /* FOOTER */
   footer { border-top: 1px solid var(--hairline); padding: 64px 0 44px; position: relative; z-index: 2; }
@@ -587,6 +713,43 @@
     <div class="scroll-cue" data-anim data-d="6"><div class="mouse"></div>Scroll</div>
   </header>
 
+  <!-- ===================== DISASSEMBLE ===================== -->
+  <section id="disassemble" class="disassemble">
+    <div class="wrap">
+      <div class="section-head center" data-anim>
+        <span class="eyebrow">What's inside</span>
+        <h2>One app.<br>Every part of your training.</h2>
+      </div>
+    </div>
+
+    <div class="da-stage">
+      <div class="iphone da-phone">
+        <div class="screen">
+          <img src="assets/disassemble/home-screen.jpg" alt="SetPR home screen showing this week's training split" loading="lazy" />
+        </div>
+      </div>
+
+      <div class="da-part da-part--progress">
+        <img src="assets/disassemble/progress-card.jpg" alt="SetPR progress card showing bench press 1RM trending up" loading="lazy" />
+        <div class="da-callout"><span class="da-callout-num">01</span>Know if you're actually getting stronger</div>
+      </div>
+
+      <div class="da-part da-part--pr">
+        <img src="assets/disassemble/pr-badge.jpg" alt="SetPR personal record badge" loading="lazy" />
+        <div class="da-callout"><span class="da-callout-num">02</span>Every PR, caught automatically</div>
+      </div>
+
+      <div class="da-part da-part--coach">
+        <div class="da-coach-card">
+          <span class="da-concept-tag">Concept &middot; coming soon</span>
+          <span class="da-coach-icon">&#10022;</span>
+          <p class="da-coach-msg">&ldquo;Bench felt heavy for 3 sessions &mdash; want to deload 5% next time?&rdquo;</p>
+        </div>
+        <div class="da-callout"><span class="da-callout-num">03</span>An AI coach that actually watches your training</div>
+      </div>
+    </div>
+  </section>
+
   <!-- ===================== FEATURES ===================== -->
   <section id="features">
     <div class="wrap">
@@ -619,6 +782,49 @@
         </div>
       </div>
     </div>
+  </section>
+
+  <!-- ===================== BARBELL (scroll-driven number readout) ===================== -->
+  <section id="barbell" class="barbell-hero">
+    <div class="wrap">
+      <div class="section-head center" data-anim>
+        <span class="eyebrow">The number never lies</span>
+        <h2>Load it up.</h2>
+      </div>
+    </div>
+
+    <div class="bb-stage">
+      <div class="bb-readout">
+        <span class="bb-num">405</span><span class="bb-unit">LBS</span>
+      </div>
+
+      <div class="bb-rig">
+        <div class="bb-plates bb-plates--left">
+          <img class="bb-plate" data-plate="1" src="assets/barbell/plate-45.webp" alt="" loading="lazy" />
+          <img class="bb-plate" data-plate="2" src="assets/barbell/plate-35.webp" alt="" loading="lazy" />
+          <img class="bb-plate" data-plate="3" src="assets/barbell/plate-25.webp" alt="" loading="lazy" />
+          <img class="bb-plate" data-plate="4" src="assets/barbell/plate-10.webp" alt="" loading="lazy" />
+          <img class="bb-plate" data-plate="5" src="assets/barbell/plate-10.webp" alt="" loading="lazy" />
+        </div>
+        <img class="bb-bar" src="assets/barbell/bar.webp" alt="Barbell" loading="lazy" />
+        <div class="bb-plates bb-plates--right">
+          <img class="bb-plate" data-plate="1" src="assets/barbell/plate-45.webp" alt="" loading="lazy" />
+          <img class="bb-plate" data-plate="2" src="assets/barbell/plate-35.webp" alt="" loading="lazy" />
+          <img class="bb-plate" data-plate="3" src="assets/barbell/plate-25.webp" alt="" loading="lazy" />
+          <img class="bb-plate" data-plate="4" src="assets/barbell/plate-10.webp" alt="" loading="lazy" />
+          <img class="bb-plate" data-plate="5" src="assets/barbell/plate-10.webp" alt="" loading="lazy" />
+        </div>
+      </div>
+
+      <div class="bb-captions">
+        <p class="bb-caption" data-stage="1"><span class="bb-caption-num">01</span>Log every set</p>
+        <p class="bb-caption" data-stage="2"><span class="bb-caption-num">02</span>Track your 1RM</p>
+        <p class="bb-caption" data-stage="3"><span class="bb-caption-num">03</span>Know your rep max — 1, 3, or 6</p>
+        <p class="bb-caption" data-stage="4"><span class="bb-caption-num">04</span>Your coach adjusts as you grow</p>
+      </div>
+    </div>
+
+    <div class="bb-flash"></div>
   </section>
 
   <!-- ===================== SCREENS ===================== -->
@@ -713,6 +919,23 @@
   <!-- ===================== DOWNLOAD ===================== -->
   <section id="download" class="download">
     <div class="download-glow" data-parallax="0.1"></div>
+    <div class="download-barbell" aria-hidden="true">
+      <div class="bb-plates bb-plates--left">
+        <img class="bb-plate" src="assets/barbell/plate-45.webp" alt="" loading="lazy" />
+        <img class="bb-plate" src="assets/barbell/plate-35.webp" alt="" loading="lazy" />
+        <img class="bb-plate" src="assets/barbell/plate-25.webp" alt="" loading="lazy" />
+        <img class="bb-plate" src="assets/barbell/plate-10.webp" alt="" loading="lazy" />
+        <img class="bb-plate" src="assets/barbell/plate-10.webp" alt="" loading="lazy" />
+      </div>
+      <img class="bb-bar" src="assets/barbell/bar.webp" alt="" loading="lazy" />
+      <div class="bb-plates bb-plates--right">
+        <img class="bb-plate" src="assets/barbell/plate-45.webp" alt="" loading="lazy" />
+        <img class="bb-plate" src="assets/barbell/plate-35.webp" alt="" loading="lazy" />
+        <img class="bb-plate" src="assets/barbell/plate-25.webp" alt="" loading="lazy" />
+        <img class="bb-plate" src="assets/barbell/plate-10.webp" alt="" loading="lazy" />
+        <img class="bb-plate" src="assets/barbell/plate-10.webp" alt="" loading="lazy" />
+      </div>
+    </div>
     <div class="wrap">
       <span class="free-pill" data-anim>● Completely free — no subscription, no paywall</span>
       <img class="ico-big" src="assets/setpr-icon.png" alt="SetPR app icon" data-anim data-d="0" />
@@ -778,15 +1001,29 @@
       const metaBannerDismissalKey = 'setpr-meta-browser-banner-dismissed';
       const hasDismissedMetaBanner = sessionStorage.getItem(metaBannerDismissalKey) === 'true';
 
+      function setMetaBannerSpace() {
+        requestAnimationFrame(() => {
+          const top = parseFloat(getComputedStyle(metaBanner).top) || 0;
+          const space = top + metaBanner.getBoundingClientRect().height + 24;
+          document.documentElement.style.setProperty('--meta-banner-space', `${space}px`);
+          if (window.ScrollTrigger) ScrollTrigger.refresh();
+        });
+      }
+
       if (isMetaInAppBrowser(navigator.userAgent) && !hasDismissedMetaBanner) {
         metaBanner.hidden = false;
         metaBanner.classList.add('is-visible');
+        setMetaBannerSpace();
+        window.addEventListener('resize', setMetaBannerSpace);
       }
 
       metaBanner.querySelector('button').addEventListener('click', () => {
         metaBanner.classList.remove('is-visible');
         metaBanner.hidden = true;
+        document.documentElement.style.removeProperty('--meta-banner-space');
+        window.removeEventListener('resize', setMetaBannerSpace);
         sessionStorage.setItem('setpr-meta-browser-banner-dismissed', 'true');
+        if (window.ScrollTrigger) ScrollTrigger.refresh();
       });
 
       // ---------- LOADER ----------
@@ -837,6 +1074,132 @@
         });
       }
 
+      // ---------- DISASSEMBLE (scroll-pin teardown desktop / fade-stack mobile) ----------
+      function applyDisassemblyScroll() {
+        const section = document.querySelector('.disassemble');
+        if (!section || reduce || !window.gsap || !window.ScrollTrigger) return;
+        gsap.registerPlugin(ScrollTrigger);
+        const parts = section.querySelectorAll('.da-part');
+
+        ScrollTrigger.matchMedia({
+          '(min-width: 861px)': function () {
+            section.classList.add('is-desktop-fx');
+            const stage = section.querySelector('.da-stage');
+            const progress = section.querySelector('.da-part--progress');
+            const pr = section.querySelector('.da-part--pr');
+            const coach = section.querySelector('.da-part--coach');
+
+            gsap.set([progress, pr, coach], { xPercent: -50, yPercent: -50, x: 0, y: 0, rotate: 0, opacity: 0 });
+
+            const tl = gsap.timeline({
+              scrollTrigger: {
+                trigger: stage,
+                start: 'top top',
+                end: '+=3200',
+                scrub: 0.6,
+                pin: true,
+                anticipatePin: 1,
+              },
+            });
+
+            tl.addLabel('start')
+              .to(progress, { x: -340, y: -20, rotate: -6, opacity: 1, duration: 1, ease: 'power2.out' }, 'start+=0.4')
+              .addLabel('progressHold', '+=0.5')
+              .to(pr, { x: 340, y: -130, rotate: 8, opacity: 1, duration: 1, ease: 'power2.out' }, 'progressHold+=0.3')
+              .addLabel('prHold', '+=0.5')
+              .to(coach, { x: -300, y: 210, rotate: -4, opacity: 1, duration: 1, ease: 'power2.out' }, 'prHold+=0.3')
+              .addLabel('allOut', '+=0.6')
+              .to([progress, pr, coach], { x: 0, y: 0, rotate: 0, opacity: 0, duration: 1.1, ease: 'power2.inOut' }, 'allOut');
+
+            return () => section.classList.remove('is-desktop-fx');
+          },
+
+          '(max-width: 860px)': function () {
+            gsap.set(parts, { opacity: 0, y: 24 });
+            parts.forEach((part) => {
+              gsap.to(part, {
+                opacity: 1, y: 0, duration: 0.7, ease: 'power2.out',
+                scrollTrigger: { trigger: part, start: 'top 88%', once: true },
+              });
+            });
+            return () => gsap.set(parts, { clearProps: 'opacity,transform' });
+          },
+        });
+      }
+
+      // ---------- BARBELL (scroll-pin number readout desktop / fade-stack mobile) ----------
+      function applyBarbellScroll() {
+        const section = document.querySelector('.barbell-hero');
+        if (!section || reduce || !window.gsap || !window.ScrollTrigger) return;
+        gsap.registerPlugin(ScrollTrigger);
+        const numEl = section.querySelector('.bb-num');
+
+        ScrollTrigger.matchMedia({
+          '(min-width: 861px)': function () {
+            section.classList.add('is-desktop-fx');
+            const stage = section.querySelector('.bb-stage');
+            const flash = section.querySelector('.bb-flash');
+            const plate = (n) => section.querySelectorAll('[data-plate="' + n + '"]');
+            const caption = (n) => section.querySelector('.bb-caption[data-stage="' + n + '"]');
+            const leftPlates = section.querySelectorAll('.bb-plates--left .bb-plate');
+            const rightPlates = section.querySelectorAll('.bb-plates--right .bb-plate');
+
+            gsap.set(leftPlates, { x: -46, opacity: 0 });
+            gsap.set(rightPlates, { x: 46, opacity: 0 });
+            gsap.set(section.querySelectorAll('.bb-caption'), { opacity: 0 });
+
+            const counter = { val: 0 };
+            numEl.textContent = '0';
+            const setNum = () => { numEl.textContent = String(Math.round(counter.val)); };
+
+            function loadStage(tl, label, plateNum, target, capNum, holdLabel) {
+              tl.to(counter, { val: target, duration: 1, ease: 'power1.out', onUpdate: setNum }, label)
+                .to(plate(plateNum), { x: 0, opacity: 1, duration: 1, ease: 'power2.out' }, '<');
+              if (capNum) tl.to(caption(capNum), { opacity: 1, duration: 0.4 }, '<0.2');
+              tl.addLabel(holdLabel, '+=0.5');
+              if (capNum) tl.to(caption(capNum), { opacity: 0, duration: 0.3 }, holdLabel);
+            }
+
+            const tl = gsap.timeline({
+              scrollTrigger: {
+                trigger: stage,
+                start: 'top top',
+                end: '+=4400',
+                scrub: 0.6,
+                pin: true,
+                anticipatePin: 1,
+              },
+            });
+
+            tl.addLabel('s0');
+            loadStage(tl, 's0+=0.2', 1, 135, 1, 'hold1');
+            loadStage(tl, 'hold1+=0.2', 2, 225, 2, 'hold2');
+            loadStage(tl, 'hold2+=0.2', 3, 315, 3, 'hold3');
+            loadStage(tl, 'hold3+=0.2', 4, 365, 4, 'hold4');
+
+            tl.to(counter, { val: 405, duration: 0.8, ease: 'power2.out', onUpdate: setNum }, 'hold4+=0.2')
+              .to(plate(5), { x: 0, opacity: 1, duration: 0.8, ease: 'power2.out' }, '<')
+              .to(numEl, { color: '#F5B942', duration: 0.5 }, '<0.3')
+              .set(section, { className: '+=is-gold' }, '<')
+              .to(flash, { opacity: 0.9, duration: 0.18 }, '<')
+              .to(flash, { opacity: 0, duration: 0.6 }, '>')
+              .addLabel('end', '+=0.4');
+
+            return () => { section.classList.remove('is-desktop-fx', 'is-gold'); numEl.textContent = '405'; };
+          },
+
+          '(max-width: 860px)': function () {
+            const revealEls = [...section.querySelectorAll('.bb-plate, .bb-caption')];
+            gsap.set(revealEls, { opacity: 0, y: 16 });
+            gsap.to(revealEls, {
+              opacity: 1, y: 0, duration: 0.7, ease: 'power2.out', stagger: 0.05,
+              scrollTrigger: { trigger: section.querySelector('.bb-stage'), start: 'top 80%', once: true },
+            });
+            return () => gsap.set(revealEls, { clearProps: 'opacity,transform' });
+          },
+        });
+      }
+
       function applyAnimeEnhancements() {
         if (reduce || !window.anime) return;
         anime.animate('.anime-meter i', {
@@ -872,6 +1235,8 @@
       if (reduce) revealHero();
       applyMotionEnhancements();
       applyGsapScrollEnhancements();
+      applyDisassemblyScroll();
+      applyBarbellScroll();
       applyAnimeEnhancements();
       applyReactBitsEnhancements();
 
