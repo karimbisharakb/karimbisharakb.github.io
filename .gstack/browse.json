@@ -1,9 +1,0 @@
-{
-  "pid": 52709,
-  "port": 12881,
-  "token": "0ae14bb7-89e2-4a66-adc6-ddb08b4fb697",
-  "startedAt": "2026-08-04T17:53:10.947Z",
-  "serverPath": "/Users/karimbishara/.claude/skills/gstack/browse/src/server.ts",
-  "mode": "launched",
-  "configHash": "303a7eeccc03078b"
-}

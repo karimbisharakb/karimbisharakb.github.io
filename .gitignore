@@ -1,0 +1,9 @@
+# macOS
+.DS_Store
+
+# gstack local tooling
+.gstack/
+
+# editor/local
+.vscode/
+*.local
