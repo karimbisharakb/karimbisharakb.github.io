@@ -580,6 +580,8 @@
   .foot-bottom { margin-top: 56px; padding-top: 26px; border-top: 1px solid var(--hairline); display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; font-size: 13px; color: var(--muted-dim); }
   .foot-bottom a { color: var(--muted); }
   .foot-bottom a:hover { color: #fff; }
+  .foot-legal { display: flex; gap: 22px; }
+  .foot-legal a { transition: color .18s ease; }
 
   /* META IN-APP BROWSER TIP */
   .meta-browser-banner {
@@ -968,11 +970,16 @@
           <div class="foot-col">
             <h4>Support</h4>
             <a href="mailto:setpr.app@gmail.com">setpr.app@gmail.com</a>
-            <a href="#">Privacy Policy</a>
+            <a href="/privacy">Privacy Policy</a>
+            <a href="/terms">Terms of Service</a>
           </div>
         </div>
       </div>
-      <div class="foot-bottom"><span>© 2026 SetPR. All rights reserved.</span><span>Made for the gym floor.</span></div>
+      <div class="foot-bottom">
+        <span>© 2026 SetPR. All rights reserved.</span>
+        <span class="foot-legal"><a href="/privacy">Privacy</a><a href="/terms">Terms</a></span>
+        <span>Made for the gym floor.</span>
+      </div>
     </div>
   </footer>
 
