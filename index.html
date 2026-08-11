@@ -749,6 +749,62 @@
     .faq-a { padding: 0 20px 22px; }
   }
 
+  /* ============================================================
+     CONTACT
+     ============================================================ */
+  .contact { overflow: hidden; padding-top: 40px; }
+  .contact-glow {
+    position: absolute; left: 50%; top: 30%;
+    width: min(1000px, 110vw); height: 520px; transform: translateX(-50%);
+    background: radial-gradient(circle, rgba(230,57,70,0.12) 0%, transparent 66%);
+    pointer-events: none; z-index: 0;
+  }
+  .contact .wrap { position: relative; z-index: 2; }
+  .contact-cards {
+    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px; max-width: 980px; margin: 0 auto;
+  }
+  .ccard {
+    background: var(--surface); border: 1px solid var(--hairline); border-radius: 24px;
+    padding: 36px 32px 34px; display: flex; flex-direction: column;
+    transition: transform .3s cubic-bezier(.2,.7,.2,1), border-color .3s ease, background .3s ease;
+  }
+  .ccard:hover { transform: translateY(-5px); border-color: var(--hairline-strong); background: var(--surface-2); }
+  .ccard-icon {
+    width: 54px; height: 54px; border-radius: 16px; margin-bottom: 24px;
+    background: var(--surface-2); border: 1px solid var(--hairline);
+    display: grid; place-items: center; transition: background .3s ease;
+  }
+  .ccard:hover .ccard-icon { background: rgba(230,57,70,0.12); }
+  .ccard-icon svg { width: 25px; height: 25px; stroke: var(--red); fill: none; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+  .ccard h3 { font-weight: 800; font-size: 23px; letter-spacing: -0.02em; }
+  .ccard p { font-size: 15.5px; line-height: 1.6; color: var(--muted); margin-top: 12px; flex: 1; }
+  .ccard-mail {
+    display: inline-flex; align-items: center; gap: 9px; margin-top: 26px;
+    align-self: flex-start; padding: 13px 20px; border-radius: 100px;
+    background: var(--surface-2); border: 1px solid var(--hairline-strong);
+    font-family: var(--font-mono); font-size: 14.5px; font-weight: 600; color: #fff;
+    word-break: break-all;
+    transition: background .2s ease, border-color .2s ease, transform .2s ease;
+  }
+  .ccard-mail:hover { background: rgba(230,57,70,0.14); border-color: rgba(230,57,70,0.45); transform: translateY(-2px); }
+  .ccard-mail svg { width: 15px; height: 15px; stroke: var(--red); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+
+  .contact-note {
+    max-width: 720px; margin: 38px auto 0; text-align: center;
+    font-size: 14.5px; line-height: 1.65; color: var(--muted-dim);
+  }
+  .contact-note a { color: var(--muted); text-decoration: underline; text-underline-offset: 3px; }
+  .contact-note a:hover { color: #fff; }
+
+  @media (max-width: 800px) {
+    .contact-cards { grid-template-columns: 1fr; }
+    .ccard { padding: 30px 24px 28px; }
+  }
+  @media (max-width: 420px) {
+    .ccard-mail { font-size: 13px; padding: 12px 16px; }
+  }
+
   /* META IN-APP BROWSER TIP */
   .meta-browser-banner {
     position: fixed; top: 76px; left: 50%; z-index: 150;
@@ -830,6 +886,7 @@
         <a href="#screens">Screens</a>
         <a href="#pricing">Pricing</a>
         <a href="#faq">FAQ</a>
+        <a href="#contact">Support</a>
         <a href="#download" class="nav-cta">Download</a>
       </div>
     </div>
@@ -1202,6 +1259,48 @@
     </div>
   </section>
 
+  <!-- ===================== CONTACT ===================== -->
+  <section id="contact" class="contact">
+    <div class="contact-glow" aria-hidden="true"></div>
+    <div class="wrap">
+      <div class="section-head center" data-anim>
+        <span class="eyebrow">Support</span>
+        <h2>Talk to a human.</h2>
+        <p>SetPR is built by a very small team, so your email lands with the people who write the app. Every message gets read.</p>
+      </div>
+
+      <div class="contact-cards">
+        <div class="ccard" data-anim data-d="0">
+          <span class="ccard-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+          </span>
+          <h3>General support</h3>
+          <p>Something broken, a question about your subscription, or a feature you wish existed. Tell us what you were doing and what your iPhone is running, and we can usually get straight to it.</p>
+          <a class="ccard-mail" href="mailto:support@getsetpr.com?subject=SetPR%20support">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16a2 2 0 012 2v12a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2z"/><path d="M22 6l-10 7L2 6"/></svg>
+            support@getsetpr.com
+          </a>
+        </div>
+
+        <div class="ccard" data-anim data-d="1">
+          <span class="ccard-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+          </span>
+          <h3>Privacy &amp; your data</h3>
+          <p>Access, correction or deletion requests, questions about what the AI&nbsp;Coach sends, or anything else covered by our Privacy Policy. Put what you need in the subject line and we'll action it.</p>
+          <a class="ccard-mail" href="mailto:privacy@getsetpr.com?subject=Privacy%20request">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16a2 2 0 012 2v12a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2z"/><path d="M22 6l-10 7L2 6"/></svg>
+            privacy@getsetpr.com
+          </a>
+        </div>
+      </div>
+
+      <p class="contact-note" data-anim data-d="2">
+        Want to know what we hold before you ask? Read the <a href="/privacy">Privacy Policy</a> and <a href="/terms">Terms of Service</a>. Deletion steps are in <a href="#faq">the FAQ</a>.
+      </p>
+    </div>
+  </section>
+
   <!-- ===================== DOWNLOAD ===================== -->
   <section id="download" class="download">
     <div class="download-glow" data-parallax="0.1"></div>
@@ -1255,7 +1354,12 @@
           </div>
           <div class="foot-col">
             <h4>Support</h4>
-            <a href="mailto:setpr.app@gmail.com">setpr.app@gmail.com</a>
+            <a href="#contact">Contact us</a>
+            <a href="mailto:support@getsetpr.com?subject=SetPR%20support">support@getsetpr.com</a>
+            <a href="mailto:privacy@getsetpr.com?subject=Privacy%20request">privacy@getsetpr.com</a>
+          </div>
+          <div class="foot-col">
+            <h4>Legal</h4>
             <a href="/privacy">Privacy Policy</a>
             <a href="/terms">Terms of Service</a>
           </div>
