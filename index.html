@@ -3,6 +3,25 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="SetPR is a strength tracker for iPhone. Log every working set, watch your estimated 1RM climb, and catch every PR automatically. Free to start — Premium adds an AI Coach that reads the sessions you log." />
+<link rel="canonical" href="https://getsetpr.com/" />
+<meta name="theme-color" content="#0D0D0D" />
+<meta name="apple-itunes-app" content="app-id=6778556303" />
+<link rel="icon" href="assets/favicon-180.png" type="image/png" sizes="180x180" />
+<link rel="apple-touch-icon" href="assets/favicon-180.png" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="SetPR" />
+<meta property="og:url" content="https://getsetpr.com/" />
+<meta property="og:title" content="SetPR — Every rep. Every PR. Tracked." />
+<meta property="og:description" content="The strength tracker for people who actually progress. Log every working set, watch the numbers climb, and let the AI Coach tell you what to do next." />
+<meta property="og:image" content="https://getsetpr.com/assets/og-cover.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="SetPR — Every rep. Every PR. Tracked." />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="SetPR — Every rep. Every PR. Tracked." />
+<meta name="twitter:description" content="The strength tracker for people who actually progress. Free to start; Premium adds an AI Coach that reads the sessions you log." />
+<meta name="twitter:image" content="https://getsetpr.com/assets/og-cover.png" />
 <title>SetPR — Every rep. Every PR. Tracked.</title>
 <style>
   :root {
@@ -805,6 +824,21 @@
     .ccard-mail { font-size: 13px; padding: 12px 16px; }
   }
 
+  /* ============================================================
+     POLISH
+     ============================================================ */
+  /* Anchor targets sit under the fixed nav on a plain #hash jump (no JS,
+     or a link followed from /privacy), so reserve the nav strip. */
+  section[id], header[id] { scroll-margin-top: calc(var(--nav-h, 70px) + 20px); }
+
+  /* The Coach shipped, so its card is no longer a dashed "concept" sketch:
+     solid border, gold tag, matching the Premium treatment in #pricing. */
+  .da-coach-card { border-style: solid; border-color: rgba(245,185,66,0.3); }
+  .da-concept-tag {
+    color: var(--gold); background: rgba(245,185,66,0.12);
+    border-color: rgba(245,185,66,0.32);
+  }
+
   /* META IN-APP BROWSER TIP */
   .meta-browser-banner {
     position: fixed; top: 76px; left: 50%; z-index: 150;
@@ -921,7 +955,7 @@
           <div class="hero-stats" data-anim data-d="5">
             <div><div class="n">1RM</div><div class="l">Auto-estimated</div></div>
             <div><div class="n"><span class="red">PR</span></div><div class="l">Detection built-in</div></div>
-            <div><div class="n">$0</div><div class="l">Free. Forever.</div></div>
+            <div><div class="n">$0</div><div class="l">Free tier, forever</div></div>
           </div>
         </div>
 
@@ -968,11 +1002,11 @@
 
       <div class="da-part da-part--coach">
         <div class="da-coach-card">
-          <span class="da-concept-tag">Concept &middot; coming soon</span>
+          <span class="da-concept-tag">Premium</span>
           <span class="da-coach-icon">&#10022;</span>
           <p class="da-coach-msg">&ldquo;Bench felt heavy for 3 sessions &mdash; want to deload 5% next time?&rdquo;</p>
         </div>
-        <div class="da-callout"><span class="da-callout-num">03</span>An AI coach that actually watches your training</div>
+        <div class="da-callout"><span class="da-callout-num">03</span>An AI coach that reads every session you log</div>
       </div>
     </div>
   </section>
@@ -1322,10 +1356,10 @@
       </div>
     </div>
     <div class="wrap">
-      <span class="free-pill" data-anim>● Completely free — no subscription, no paywall</span>
+      <span class="free-pill" data-anim>● Free to start — no trial, no card</span>
       <img class="ico-big" src="assets/setpr-icon.png" alt="SetPR app icon" data-anim data-d="0" />
       <h2 data-anim data-d="1">Stop guessing.<br>Start setting <span class="red">PRs</span>.</h2>
-      <p class="sub" data-anim data-d="2">Download SetPR and make every session count. Free on the App Store.</p>
+      <p class="sub" data-anim data-d="2">Download SetPR and make every session count. Free on the App&nbsp;Store, with Premium when you want the coach.</p>
       <div class="hero-ctas" data-anim data-d="3">
         <a href="https://apps.apple.com/app/setpr-lift-tracker/id6778556303" class="appstore-btn on-dark reactbits-magnetic" aria-label="Download on the App Store">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.05 12.04c-.02-2.05 1.68-3.04 1.76-3.09-.96-1.4-2.45-1.6-2.98-1.62-1.27-.13-2.48.75-3.12.75-.64 0-1.64-.73-2.7-.71-1.39.02-2.67.81-3.38 2.05-1.44 2.5-.37 6.2 1.03 8.23.69.99 1.51 2.1 2.58 2.06 1.04-.04 1.43-.67 2.69-.67 1.25 0 1.61.67 2.7.65 1.12-.02 1.83-1.01 2.51-2.01.79-1.15 1.12-2.26 1.14-2.32-.03-.01-2.18-.84-2.2-3.32zM15.0 6.21c.57-.69.95-1.65.85-2.61-.82.03-1.81.55-2.39 1.23-.52.6-.98 1.57-.86 2.5.91.07 1.84-.46 2.4-1.12z"/></svg>
@@ -1805,6 +1839,23 @@
           "text": "Email support@getsetpr.com. A real person reads every message, and feature requests genuinely shape what gets built next."
         }
       }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "MobileApplication",
+    "name": "SetPR — Lift Tracker",
+    "operatingSystem": "iOS 16.0 or later",
+    "applicationCategory": "HealthApplication",
+    "url": "https://getsetpr.com/",
+    "downloadUrl": "https://apps.apple.com/app/setpr-lift-tracker/id6778556303",
+    "description": "Strength training tracker for iPhone. Build a split, log every working set, track estimated 1RM and catch PRs automatically. Premium adds an AI Coach that reads your logged sessions.",
+    "offers": [
+      { "@type": "Offer", "name": "Free", "price": "0", "priceCurrency": "USD" },
+      { "@type": "Offer", "name": "SetPR Premium (monthly)", "price": "8.99", "priceCurrency": "USD" },
+      { "@type": "Offer", "name": "SetPR Premium (annual)", "price": "79.99", "priceCurrency": "USD" }
     ]
   }
   </script>
