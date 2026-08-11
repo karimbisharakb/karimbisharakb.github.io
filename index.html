@@ -698,6 +698,57 @@
     .plan-tag { min-height: 0; }
   }
 
+  /* ============================================================
+     FAQ
+     ============================================================ */
+  .faq { padding-top: 110px; }
+  .faq-list { max-width: 860px; margin: 0 auto; display: grid; gap: 12px; }
+  .faq-item {
+    background: var(--surface); border: 1px solid var(--hairline); border-radius: 18px;
+    transition: border-color .25s ease, background .25s ease;
+  }
+  .faq-item:hover { border-color: var(--hairline-strong); }
+  .faq-item[open] { background: var(--surface-2); border-color: rgba(230,57,70,0.3); }
+  .faq-item summary {
+    list-style: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: space-between; gap: 22px;
+    padding: 24px 26px;
+    font-size: 18px; font-weight: 700; letter-spacing: -0.015em; color: #fff;
+  }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-item summary::marker { content: ''; }
+  .faq-item summary:focus-visible { outline: 2px solid var(--red); outline-offset: -2px; border-radius: 18px; }
+  .faq-sign {
+    flex: none; width: 28px; height: 28px; border-radius: 50%;
+    border: 1px solid var(--hairline-strong); display: grid; place-items: center;
+    transition: transform .3s cubic-bezier(.2,.7,.2,1), background .25s ease, border-color .25s ease;
+  }
+  .faq-sign svg { width: 13px; height: 13px; stroke: var(--muted); fill: none; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; transition: stroke .25s ease; }
+  .faq-item[open] .faq-sign { transform: rotate(180deg); background: rgba(230,57,70,0.12); border-color: rgba(230,57,70,0.4); }
+  .faq-item[open] .faq-sign svg { stroke: var(--red); }
+  .faq-a { padding: 0 26px 26px; max-width: 700px; }
+  .faq-a p { font-size: 16px; line-height: 1.65; color: var(--muted); }
+  .faq-a p + p, .faq-a ol + p { margin-top: 14px; }
+  .faq-a b { color: #d8d8dc; font-weight: 700; }
+  .faq-a a { color: var(--red); text-decoration: underline; text-underline-offset: 3px; }
+  .faq-a a:hover { color: var(--red-bright); }
+  .faq-a ol { margin: 12px 0 0 20px; display: grid; gap: 8px; }
+  .faq-a li { font-size: 16px; line-height: 1.6; color: var(--muted); }
+
+  .faq-more {
+    max-width: 860px; margin: 34px auto 0; padding: 22px 26px;
+    border: 1px dashed var(--hairline-strong); border-radius: 18px;
+    display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap;
+  }
+  .faq-more p { font-size: 15.5px; color: var(--muted); }
+  .faq-more a { font-weight: 700; color: var(--red); }
+  .faq-more a:hover { color: var(--red-bright); }
+
+  @media (max-width: 620px) {
+    .faq-item summary { padding: 20px; font-size: 16.5px; gap: 14px; }
+    .faq-a { padding: 0 20px 22px; }
+  }
+
   /* META IN-APP BROWSER TIP */
   .meta-browser-banner {
     position: fixed; top: 76px; left: 50%; z-index: 150;
@@ -778,6 +829,7 @@
         <a href="#features">Features</a>
         <a href="#screens">Screens</a>
         <a href="#pricing">Pricing</a>
+        <a href="#faq">FAQ</a>
         <a href="#download" class="nav-cta">Download</a>
       </div>
     </div>
@@ -1099,6 +1151,57 @@
     </div>
   </section>
 
+  <!-- ===================== FAQ ===================== -->
+  <section id="faq" class="faq">
+    <div class="wrap">
+      <div class="section-head center" data-anim>
+        <span class="eyebrow">FAQ</span>
+        <h2>Questions, answered.</h2>
+        <p>What SetPR does, what it costs, what happens to your data — no hedging.</p>
+      </div>
+
+      <div class="faq-list" data-anim data-d="0">
+        <details class="faq-item">
+          <summary>What is SetPR, and how is it different from Hevy or Strong?<span class="faq-sign" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span></summary>
+          <div class="faq-a"><p>Those are good loggers. They record what you did and show it back to you, and SetPR does that too — splits, working sets, rest timer, progress charts, automatic PR detection.</p><p>The difference is what happens after you log. With Premium, SetPR's <b>AI Coach reads the sessions you've actually logged</b> and tells you what's progressing, what's stalled, and what to change next. A logger hands you a spreadsheet; SetPR reads the spreadsheet back to you.</p></div>
+        </details>
+        <details class="faq-item">
+          <summary>Is SetPR free?<span class="faq-sign" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span></summary>
+          <div class="faq-a"><p>Yes. <b>One training split and the full tracker are free</b> — unlimited workout logging, progress charts, estimated 1RM history and automatic PR detection. No trial timer, no card, no ads.</p><p>SetPR Premium ($8.99/month or $79.99/year) adds the AI Coach and unlimited splits. Nothing you log on the free tier expires or gets locked away later.</p></div>
+        </details>
+        <details class="faq-item">
+          <summary>How does the AI Coach actually work?<span class="faq-sign" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span></summary>
+          <div class="faq-a"><p>It reads training you've already logged. Once you have <b>three weeks of logged sessions</b>, it writes you a check-in each week: which lifts are moving, which have stalled, and what to do about it — including which rep-max to aim at on each lift (1RM, 3RM or 6RM) and the reasoning behind that pick.</p><p>Being straight about what it is not: it doesn't watch your form, count your reps, or replace a human coach for injury rehab or competition prep. It reasons about the numbers you log, and it needs you to log honestly to be useful.</p><p>It's opt-in. The first time you open it, the app shows you exactly what gets sent and what never does, and you can switch it off and delete what it has stored at any time in Settings.</p></div>
+        </details>
+        <details class="faq-item">
+          <summary>What platforms does SetPR run on?<span class="faq-sign" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span></summary>
+          <div class="faq-a"><p><b>iPhone, running iOS 16 or later.</b> There's no Android, web or iPad-optimised version today.</p></div>
+        </details>
+        <details class="faq-item">
+          <summary>How do I cancel Premium?<span class="faq-sign" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span></summary>
+          <div class="faq-a"><p>Through Apple, not through us — anything bought inside an App&nbsp;Store app is managed by your Apple&nbsp;ID. On your iPhone:</p><ol><li>Open <b>Settings</b> and tap your name at the top.</li><li>Tap <b>Subscriptions</b>.</li><li>Tap <b>SetPR</b>, then <b>Cancel Subscription</b>.</li></ol><p>You keep Premium until the end of the period you've already paid for, then drop back to the free tier. Everything you logged stays exactly where it is.</p></div>
+        </details>
+        <details class="faq-item">
+          <summary>Where is my data stored, and is it private?<span class="faq-sign" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span></summary>
+          <div class="faq-a"><p><b>Your workouts live on your iPhone.</b> We don't sell your data and there are no ads in the app.</p><p>If you turn the AI Coach on, a summary of your training is sent to Anthropic — the company running the model — so it can write your check-in: the exercises you trained recently, your best sets and rep-max trends, whether you hit PRs, and the profile details you gave it. Your name, your email, your date of birth, your body weight and your set-by-set history are <b>not</b> sent.</p><p>The full detail is in our <a href="/privacy">Privacy Policy</a>.</p></div>
+        </details>
+        <details class="faq-item">
+          <summary>How do I delete my data?<span class="faq-sign" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span></summary>
+          <div class="faq-a"><p>There are two levels, depending on how much you want gone.</p><p><b>Just the coach:</b> open Settings in the app, turn the AI Coach off and delete its data. That clears everything it has stored about you.</p><p><b>Everything:</b> deleting the app removes the training stored on your iPhone. For anything held on our side, email <a href="mailto:privacy@getsetpr.com?subject=Data%20deletion%20request">privacy@getsetpr.com</a> with the subject &ldquo;Data deletion request&rdquo; and we'll take care of it.</p></div>
+        </details>
+        <details class="faq-item">
+          <summary>Something's broken, or I want a feature. Who do I talk to?<span class="faq-sign" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span></summary>
+          <div class="faq-a"><p>Email <a href="mailto:support@getsetpr.com?subject=SetPR%20support">support@getsetpr.com</a>. A real person reads every message, and feature requests genuinely shape what gets built next.</p></div>
+        </details>
+      </div>
+
+      <div class="faq-more" data-anim data-d="1">
+        <p>Still stuck on something not covered here?</p>
+        <a href="#contact">Get in touch &rarr;</a>
+      </div>
+    </div>
+  </section>
+
   <!-- ===================== DOWNLOAD ===================== -->
   <section id="download" class="download">
     <div class="download-glow" data-parallax="0.1"></div>
@@ -1147,6 +1250,7 @@
             <a href="#features">Features</a>
             <a href="#screens">Screens</a>
             <a href="#pricing">Pricing</a>
+            <a href="#faq">FAQ</a>
             <a href="#download">Download</a>
           </div>
           <div class="foot-col">
@@ -1527,6 +1631,78 @@
         note.innerHTML = copy.note;
       });
     })();
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is SetPR, and how is it different from Hevy or Strong?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Hevy and Strong are good loggers — they record what you did and show it back to you, and SetPR does that too: splits, working sets, rest timer, progress charts, automatic PR detection. The difference is what happens after you log. With Premium, SetPR's AI Coach reads the sessions you've actually logged and tells you what's progressing, what's stalled, and what to change next."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is SetPR free?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. One training split and the full tracker are free — unlimited workout logging, progress charts, estimated 1RM history and automatic PR detection, with no trial timer, no card and no ads. SetPR Premium ($8.99/month or $79.99/year) adds the AI Coach and unlimited splits. Nothing you log on the free tier expires or gets locked away later."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How does the AI Coach actually work?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "It reads training you've already logged. Once you have three weeks of logged sessions, it writes a check-in each week covering which lifts are moving, which have stalled, and what to do about it, including which rep-max to aim at on each lift (1RM, 3RM or 6RM) and why. It does not watch your form, count reps, or replace a human coach for injury rehab or competition prep — it reasons about the numbers you log. It is opt-in, and you can switch it off and delete what it has stored at any time in Settings."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What platforms does SetPR run on?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "iPhone, running iOS 16 or later. There is no Android, web or iPad-optimised version today."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I cancel Premium?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Through Apple, not through us — anything bought inside an App Store app is managed by your Apple ID. On your iPhone: open Settings, tap your name, tap Subscriptions, tap SetPR, then Cancel Subscription. You keep Premium until the end of the period you have already paid for, then drop back to the free tier, and everything you logged stays."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Where is my data stored, and is it private?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Your workouts live on your iPhone. We do not sell your data and there are no ads. If you turn the AI Coach on, a summary of your training is sent to Anthropic so it can write your check-in: exercises trained recently, best sets and rep-max trends, whether you hit PRs, and the profile details you gave it. Your name, email, date of birth, body weight and set-by-set history are not sent. Full detail is in the Privacy Policy at getsetpr.com/privacy."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I delete my data?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "There are two levels. Just the coach: open Settings in the app, turn the AI Coach off and delete its data, which clears everything it has stored about you. Everything: deleting the app removes the training stored on your iPhone, and for anything held on our side, email privacy@getsetpr.com with the subject 'Data deletion request'."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Something's broken, or I want a feature. Who do I talk to?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Email support@getsetpr.com. A real person reads every message, and feature requests genuinely shape what gets built next."
+        }
+      }
+    ]
+  }
   </script>
 </body>
 </html>
