@@ -583,6 +583,121 @@
   .foot-legal { display: flex; gap: 22px; }
   .foot-legal a { transition: color .18s ease; }
 
+  /* ============================================================
+     PRICING
+     ============================================================ */
+  .pricing { overflow: hidden; }
+  .pricing-glow {
+    position: absolute; left: 50%; top: 12%;
+    width: min(1100px, 110vw); height: 620px;
+    transform: translateX(-50%);
+    background: radial-gradient(circle, rgba(245,185,66,0.10) 0%, rgba(230,57,70,0.07) 34%, transparent 68%);
+    pointer-events: none; z-index: 0;
+  }
+  .pricing .wrap { position: relative; z-index: 2; }
+  .pricing .section-head { margin-bottom: 40px; }
+
+  .bill-toggle {
+    display: inline-flex; align-items: center; gap: 4px; margin: 0 auto 46px;
+    padding: 5px; border-radius: 100px;
+    background: var(--surface); border: 1px solid var(--hairline);
+  }
+  .bill-wrap { text-align: center; }
+  .bt-opt {
+    display: inline-flex; align-items: center; gap: 8px;
+    border: 0; cursor: pointer; font: inherit;
+    padding: 10px 22px; border-radius: 100px;
+    background: transparent; color: var(--muted);
+    font-size: 14.5px; font-weight: 600; letter-spacing: -0.01em;
+    transition: background .22s ease, color .22s ease;
+  }
+  .bt-opt:hover { color: #fff; }
+  .bt-opt.is-active { background: var(--surface-2); color: #fff; box-shadow: inset 0 0 0 1px var(--hairline-strong); }
+  .bt-opt:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+  .bt-save {
+    font-size: 11px; font-weight: 800; letter-spacing: 0.06em;
+    padding: 3px 8px; border-radius: 100px;
+    background: rgba(245,185,66,0.14); color: var(--gold);
+    border: 1px solid rgba(245,185,66,0.32);
+  }
+
+  .plans {
+    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px; max-width: 980px; margin: 0 auto; align-items: stretch;
+  }
+  .plan {
+    position: relative; display: flex; flex-direction: column;
+    background: var(--surface); border: 1px solid var(--hairline); border-radius: 26px;
+    padding: 38px 34px 36px;
+    transition: transform .3s cubic-bezier(.2,.7,.2,1), border-color .3s ease, background .3s ease;
+  }
+  .plan:hover { transform: translateY(-5px); border-color: var(--hairline-strong); }
+  .plan--premium {
+    background: linear-gradient(168deg, rgba(245,185,66,0.07), rgba(230,57,70,0.05) 42%, var(--surface) 78%);
+    border-color: rgba(245,185,66,0.34);
+    box-shadow: 0 40px 90px -50px rgba(245,185,66,0.55);
+  }
+  .plan--premium:hover { border-color: rgba(245,185,66,0.55); }
+  .plan-flag {
+    position: absolute; top: -13px; left: 34px;
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 6px 14px; border-radius: 100px;
+    background: linear-gradient(135deg, var(--gold-bright), var(--gold));
+    color: #1a1200; font-size: 11px; font-weight: 800;
+    letter-spacing: 0.13em; text-transform: uppercase;
+    box-shadow: 0 12px 26px -12px rgba(245,185,66,0.8);
+  }
+  .plan-name { font-weight: 800; font-size: 15px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
+  .plan--premium .plan-name { color: var(--gold); }
+  .plan-tag { font-size: 15px; color: var(--muted); margin-top: 12px; line-height: 1.5; min-height: 45px; }
+  .plan-price { display: flex; align-items: baseline; gap: 3px; margin-top: 26px; }
+  .pp-cur { font-weight: 800; font-size: 28px; letter-spacing: -0.02em; align-self: flex-start; margin-top: 8px; }
+  .pp-amt { font-weight: 800; font-size: clamp(48px, 6vw, 62px); line-height: 1; letter-spacing: -0.045em; }
+  .pp-per { font-size: 15px; font-weight: 600; color: var(--muted); margin-left: 8px; }
+  .plan-note { font-size: 13.5px; color: var(--muted-dim); margin-top: 10px; min-height: 20px; }
+  .plan--premium .plan-note b { color: var(--gold); font-weight: 700; }
+
+  .plan-cta {
+    display: flex; align-items: center; justify-content: center; gap: 9px;
+    margin-top: 28px; height: 54px; border-radius: 15px;
+    font-weight: 700; font-size: 15.5px; letter-spacing: -0.01em;
+    transition: transform .18s ease, background .18s ease, border-color .18s ease;
+  }
+  .plan-cta svg { width: 17px; height: 17px; fill: currentColor; }
+  .plan-cta.ghost { background: var(--surface-2); border: 1px solid var(--hairline-strong); color: #fff; }
+  .plan-cta.ghost:hover { transform: translateY(-2px); background: #232326; }
+  .plan-cta.solid {
+    background: var(--red); color: #fff;
+    box-shadow: 0 16px 34px -16px rgba(230,57,70,0.8);
+  }
+  .plan-cta.solid:hover { transform: translateY(-2px); background: var(--red-bright); }
+
+  .plan-list { list-style: none; margin-top: 30px; padding-top: 28px; border-top: 1px solid var(--hairline); display: grid; gap: 14px; }
+  .plan-list li { display: flex; align-items: flex-start; gap: 12px; font-size: 15px; line-height: 1.45; color: #d8d8dc; }
+  .plan-list li b { color: #fff; font-weight: 700; }
+  .plan-list .tick {
+    flex: none; width: 20px; height: 20px; border-radius: 50%; margin-top: 1px;
+    display: grid; place-items: center;
+    background: rgba(230,57,70,0.14); border: 1px solid rgba(230,57,70,0.32);
+  }
+  .plan--premium .plan-list .tick { background: rgba(245,185,66,0.14); border-color: rgba(245,185,66,0.34); }
+  .plan-list .tick svg { width: 11px; height: 11px; stroke: var(--red); fill: none; stroke-width: 3.2; stroke-linecap: round; stroke-linejoin: round; }
+  .plan--premium .plan-list .tick svg { stroke: var(--gold); }
+  .plan-list .lead { font-weight: 700; color: #fff; }
+
+  .plan-foot {
+    max-width: 720px; margin: 40px auto 0; text-align: center;
+    font-size: 13.5px; line-height: 1.65; color: var(--muted-dim);
+  }
+  .plan-foot a { color: var(--muted); text-decoration: underline; text-underline-offset: 3px; }
+  .plan-foot a:hover { color: #fff; }
+
+  @media (max-width: 860px) {
+    .plans { grid-template-columns: 1fr; gap: 26px; }
+    .plan { padding: 34px 26px 32px; }
+    .plan-tag { min-height: 0; }
+  }
+
   /* META IN-APP BROWSER TIP */
   .meta-browser-banner {
     position: fixed; top: 76px; left: 50%; z-index: 150;
@@ -662,6 +777,7 @@
       <div class="nav-links">
         <a href="#features">Features</a>
         <a href="#screens">Screens</a>
+        <a href="#pricing">Pricing</a>
         <a href="#download" class="nav-cta">Download</a>
       </div>
     </div>
@@ -918,6 +1034,71 @@
     </div>
   </section>
 
+  <!-- ===================== PRICING ===================== -->
+  <section id="pricing" class="pricing">
+    <div class="pricing-glow" aria-hidden="true"></div>
+    <div class="wrap">
+      <div class="section-head center" data-anim>
+        <span class="eyebrow">Pricing</span>
+        <h2>Start free.<br>Upgrade for a coach.</h2>
+        <p>Tracking your training properly costs nothing — logging, progress charts and PR detection are all free. Premium is for when you want the AI Coach reading your sessions.</p>
+      </div>
+
+      <div class="bill-wrap" data-anim data-d="0">
+        <div class="bill-toggle" role="group" aria-label="Billing period">
+          <button type="button" class="bt-opt is-active" data-plan="monthly" aria-pressed="true">Monthly</button>
+          <button type="button" class="bt-opt" data-plan="annual" aria-pressed="false">Annual <span class="bt-save">Best value</span></button>
+        </div>
+      </div>
+
+      <div class="plans">
+        <div class="plan" data-anim data-d="1">
+          <span class="plan-name">Free</span>
+          <p class="plan-tag">The whole tracker. No trial, no card, no ads.</p>
+          <div class="plan-price"><span class="pp-cur">$</span><span class="pp-amt">0</span><span class="pp-per">forever</span></div>
+          <p class="plan-note">Nothing expires.</p>
+          <a href="https://apps.apple.com/app/setpr-lift-tracker/id6778556303" class="plan-cta ghost" aria-label="Download SetPR free on the App Store">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.05 12.04c-.02-2.05 1.68-3.04 1.76-3.09-.96-1.4-2.45-1.6-2.98-1.62-1.27-.13-2.48.75-3.12.75-.64 0-1.64-.73-2.7-.71-1.39.02-2.67.81-3.38 2.05-1.44 2.5-.37 6.2 1.03 8.23.69.99 1.51 2.1 2.58 2.06 1.04-.04 1.43-.67 2.69-.67 1.25 0 1.61.67 2.7.65 1.12-.02 1.83-1.01 2.51-2.01.79-1.15 1.12-2.26 1.14-2.32-.03-.01-2.18-.84-2.2-3.32zM15.0 6.21c.57-.69.95-1.65.85-2.61-.82.03-1.81.55-2.39 1.23-.52.6-.98 1.57-.86 2.5.91.07 1.84-.46 2.4-1.12z"/></svg>
+            Download free
+          </a>
+          <ul class="plan-list">
+            <li><span class="tick"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg></span><span><b>One training split</b> — built exactly how you want it</span></li>
+            <li><span class="tick"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg></span><span>Unlimited workouts and sets logged</span></li>
+            <li><span class="tick"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg></span><span>Progress charts with estimated 1RM history</span></li>
+            <li><span class="tick"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg></span><span>Automatic PR detection on every lift</span></li>
+            <li><span class="tick"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg></span><span>Rest timer, exercise bank, last-session numbers</span></li>
+            <li><span class="tick"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg></span><span>No ads, and we never sell your data</span></li>
+          </ul>
+        </div>
+
+        <div class="plan plan--premium" data-anim data-d="2">
+          <span class="plan-flag">Recommended</span>
+          <span class="plan-name">SetPR Premium</span>
+          <p class="plan-tag">Everything in Free, plus a coach that reads every session you log.</p>
+          <div class="plan-price">
+            <span class="pp-cur">$</span><span class="pp-amt" data-price-amt>8.99</span><span class="pp-per" data-price-per>per month</span>
+          </div>
+          <p class="plan-note" data-price-note>Or <b>$79.99/year</b> — about $6.67/month.</p>
+          <a href="https://apps.apple.com/app/setpr-lift-tracker/id6778556303" class="plan-cta solid" aria-label="Get SetPR Premium on the App Store">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.05 12.04c-.02-2.05 1.68-3.04 1.76-3.09-.96-1.4-2.45-1.6-2.98-1.62-1.27-.13-2.48.75-3.12.75-.64 0-1.64-.73-2.7-.71-1.39.02-2.67.81-3.38 2.05-1.44 2.5-.37 6.2 1.03 8.23.69.99 1.51 2.1 2.58 2.06 1.04-.04 1.43-.67 2.69-.67 1.25 0 1.61.67 2.7.65 1.12-.02 1.83-1.01 2.51-2.01.79-1.15 1.12-2.26 1.14-2.32-.03-.01-2.18-.84-2.2-3.32zM15.0 6.21c.57-.69.95-1.65.85-2.61-.82.03-1.81.55-2.39 1.23-.52.6-.98 1.57-.86 2.5.91.07 1.84-.46 2.4-1.12z"/></svg>
+            Get Premium
+          </a>
+          <ul class="plan-list">
+            <li><span class="tick"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg></span><span class="lead">Everything in Free, plus:</span></li>
+            <li><span class="tick"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg></span><span><b>AI Coach</b> — reads the sessions you've logged and tells you what's progressing, what's stalled, and what to do next</span></li>
+            <li><span class="tick"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg></span><span><b>Weekly check-ins</b> — a fresh read on your recent training, once you've logged 3 weeks</span></li>
+            <li><span class="tick"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg></span><span><b>Rep-max guidance</b> — the coach picks 1RM, 3RM or 6RM per lift, and says why</span></li>
+            <li><span class="tick"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg></span><span><b>Unlimited splits</b> — run as many programs as you want</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <p class="plan-foot">
+        Premium is an auto-renewing subscription purchased inside the app and billed through your Apple&nbsp;ID. Cancel anytime from your App&nbsp;Store subscription settings — see <a href="#faq">the FAQ</a> for the steps. Prices shown in USD; App&nbsp;Store pricing varies by region. <a href="/terms">Terms</a> · <a href="/privacy">Privacy</a>
+      </p>
+    </div>
+  </section>
+
   <!-- ===================== DOWNLOAD ===================== -->
   <section id="download" class="download">
     <div class="download-glow" data-parallax="0.1"></div>
@@ -965,6 +1146,7 @@
             <h4>Product</h4>
             <a href="#features">Features</a>
             <a href="#screens">Screens</a>
+            <a href="#pricing">Pricing</a>
             <a href="#download">Download</a>
           </div>
           <div class="foot-col">
@@ -1314,6 +1496,35 @@
           window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
           history.replaceState(null, '', id);
         });
+      });
+    })();
+  </script>
+  <script>
+    // Billing toggle. Progressive enhancement only: with JS off the card already
+    // shows the monthly price and names the annual price in the note below it.
+    (function () {
+      const toggle = document.querySelector('.bill-toggle');
+      if (!toggle) return;
+      const amt = document.querySelector('[data-price-amt]');
+      const per = document.querySelector('[data-price-per]');
+      const note = document.querySelector('[data-price-note]');
+      const COPY = {
+        monthly: { amt: '8.99', per: 'per month', note: 'Or <b>$79.99/year</b> — about $6.67/month.' },
+        annual:  { amt: '79.99', per: 'per year', note: 'Best value — about <b>$6.67/month</b>, 26% off monthly.' }
+      };
+      toggle.addEventListener('click', (e) => {
+        const btn = e.target.closest('.bt-opt');
+        if (!btn) return;
+        const copy = COPY[btn.dataset.plan];
+        if (!copy) return;
+        toggle.querySelectorAll('.bt-opt').forEach((b) => {
+          const on = b === btn;
+          b.classList.toggle('is-active', on);
+          b.setAttribute('aria-pressed', String(on));
+        });
+        amt.textContent = copy.amt;
+        per.textContent = copy.per;
+        note.innerHTML = copy.note;
       });
     })();
   </script>
