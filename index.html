@@ -41,10 +41,17 @@
     --gold-bright: #FFD877;
     --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, "Segoe UI", Roboto, sans-serif;
     --font-mono: "SF Mono", "JetBrains Mono", ui-monospace, "Roboto Mono", monospace;
+    --nav-h: 70px;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html { scroll-behavior: smooth; }
+  /* Lenis smooth-scroll: JS drives scroll, so disable native smooth + let content set height */
+  html.lenis, html.lenis body { height: auto; }
+  html.lenis { scroll-behavior: auto !important; }
+  .lenis.lenis-smooth { scroll-behavior: auto !important; }
+  .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+  .lenis.lenis-stopped { overflow: hidden; }
   body {
     background: var(--bg);
     color: var(--white);
@@ -213,9 +220,12 @@
     display: flex; align-items: center;
     padding: 130px 0 80px; overflow: hidden;
   }
+  /* Parallax writes --py (never style.transform) so base transforms survive. */
+  [data-parallax] { transform: translate3d(0, var(--py, 0px), 0); }
   .hero-bg-glow {
     position: absolute; top: 50%; left: 60%;
-    width: 900px; height: 900px; transform: translate(-50%,-50%);
+    width: 900px; height: 900px;
+    transform: translate(-50%,-50%) translate3d(0, var(--py, 0px), 0);
     background: radial-gradient(circle, rgba(230,57,70,0.22) 0%, rgba(230,57,70,0.06) 36%, transparent 66%);
     pointer-events: none; will-change: transform;
   }
@@ -297,20 +307,21 @@
     background: radial-gradient(circle, rgba(230,57,70,0.28), transparent 60%);
     filter: blur(10px); pointer-events: none;
   }
-  .hero-video-shell {
+  .hero-media-shell {
     position: relative; z-index: 2; width: min(100%, 520px); aspect-ratio: 1 / 1;
     overflow: hidden; border: 1px solid rgba(255,255,255,.16); border-radius: 30px;
     background: #252936; box-shadow: 0 42px 100px -40px rgba(0,0,0,.92), 0 0 0 8px rgba(230,57,70,.035);
   }
-  .hero-video-shell::before { content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(180deg, rgba(5,5,7,.18), transparent 34%, rgba(5,5,7,.36)), radial-gradient(circle at 50% 50%, transparent 44%, rgba(3,3,4,.34)); }
-  .hero-video-shell::after { content: ''; position: absolute; inset: 13px; z-index: 2; pointer-events: none; border: 1px solid rgba(255,255,255,.12); border-radius: 21px; }
-  #hero-video { width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; filter: saturate(.88) contrast(1.08); }
-  .hero-video-hud { position: absolute; z-index: 3; left: 29px; right: 29px; display: flex; justify-content: space-between; align-items: center; font-size: 10px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: rgba(255,255,255,.8); pointer-events: none; }
-  .hero-video-hud.top { top: 29px; }
-  .hero-video-hud.bottom { bottom: 29px; color: rgba(255,255,255,.6); }
-  .hero-video-hud .rec { display: inline-flex; align-items: center; gap: 7px; color: #fff; }
-  .hero-video-hud .rec::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--red); box-shadow: 0 0 14px var(--red); }
-  .hero-video-hud .time { font-variant-numeric: tabular-nums; }
+  .hero-media-shell::before { content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(180deg, rgba(5,5,7,.18), transparent 34%, rgba(5,5,7,.36)), radial-gradient(circle at 50% 50%, transparent 44%, rgba(3,3,4,.34)); }
+  .hero-media-shell::after { content: ''; position: absolute; inset: 13px; z-index: 2; pointer-events: none; border: 1px solid rgba(255,255,255,.12); border-radius: 21px; }
+  #hero-media { width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; }
+  .hero-media-shell picture { display: contents; }
+  .hero-media-hud { position: absolute; z-index: 3; left: 29px; right: 29px; display: flex; justify-content: space-between; align-items: center; font-size: 10px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: rgba(255,255,255,.8); pointer-events: none; }
+  .hero-media-hud.top { top: 29px; }
+  .hero-media-hud.bottom { bottom: 29px; color: rgba(255,255,255,.6); }
+  .hero-media-hud .hud-dot { display: inline-flex; align-items: center; gap: 7px; color: #fff; }
+  .hero-media-hud .hud-dot::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--red); box-shadow: 0 0 14px var(--red); }
+  .hero-media-hud .hud-value { font-variant-numeric: tabular-nums; }
   .float { animation: floaty 6.5s ease-in-out infinite; }
   @keyframes floaty { 0%,100% { transform: translateY(0) rotate(-1deg); } 50% { transform: translateY(-18px) rotate(1deg); } }
 
@@ -327,7 +338,7 @@
     header.hero { padding: 120px 0 70px; }
     .hero-grid { grid-template-columns: 1fr; gap: 56px; }
     .scroll-cue { display: none; }
-    .hero-video-shell { width: min(100%, 440px); }
+    .hero-media-shell { width: min(100%, 440px); }
   }
 
   /* ============================================================
@@ -444,10 +455,19 @@
 
   /* desktop scroll-pin enhancement (added by JS when GSAP + ScrollTrigger + viewport allow it) */
   .disassemble.is-desktop-fx .da-stage {
-    position: relative; min-height: 100vh; overflow: visible;
+    position: relative; overflow: visible;
     margin-top: var(--meta-banner-space, 0px);
+    /* Centre within the area BELOW the fixed nav, else the pinned phone
+       sits at the stage's top padding and the nav clips its top ~50px. */
+    height: 100vh; box-sizing: border-box;
+    padding-top: calc(var(--nav-h) + 16px);
+    justify-content: center;
   }
   .disassemble.is-desktop-fx .da-phone { position: relative; z-index: 2; }
+  /* The phone is a fixed 642px tall; on short viewports it won't fit between the
+     nav and the fold, so scale it down rather than let it clip. */
+  @media (max-height: 820px) { .disassemble.is-desktop-fx .da-phone { transform: scale(.86); } }
+  @media (max-height: 730px) { .disassemble.is-desktop-fx .da-phone { transform: scale(.74); } }
   .disassemble.is-desktop-fx .da-part {
     position: absolute; top: 50%; left: 50%; max-width: 460px; will-change: transform, opacity;
   }
@@ -465,7 +485,9 @@
   /* ============================================================
      BARBELL (scroll-driven number readout)
      ============================================================ */
-  .barbell-hero { position: relative; overflow: hidden; }
+  /* Trimmed top padding: 303px of dead scroll sat between the section top and
+     pin engage, reading as a "long pause" before the first plate. */
+  .barbell-hero { position: relative; overflow: hidden; padding-top: 60px; }
   .bb-stage {
     display: flex; flex-direction: column; align-items: center; gap: 40px;
     padding: 10px 24px 20px;
@@ -487,8 +509,10 @@
   .bb-plates { display: flex; align-items: center; gap: 6px; }
   .bb-plates--left { flex-direction: row-reverse; }
   .bb-plate { width: min(5.5vw, 76px); flex: none; display: block; }
-  .bb-rig { filter: drop-shadow(0 0 46px rgba(245,185,66,.28)); transition: filter .6s ease; }
-  .barbell-hero:not(.is-gold) .bb-rig { filter: drop-shadow(0 0 0 rgba(245,185,66,0)); }
+  /* No filter on the moving rig during scrub (avoids a per-frame filter pass over
+     all 11 plate images). The gold glow is applied only at the settled climax. */
+  .bb-rig { transition: filter .5s ease; }
+  .barbell-hero.is-gold .bb-rig { filter: drop-shadow(0 0 46px rgba(245,185,66,.5)); }
 
   .bb-captions { position: relative; min-height: 32px; text-align: center; }
   .bb-caption {
@@ -508,8 +532,11 @@
   }
 
   .barbell-hero.is-desktop-fx .bb-stage {
-    min-height: 100vh; justify-content: center; position: relative;
+    justify-content: center; position: relative;
     margin-top: var(--meta-banner-space, 0px);
+    /* Reserve the nav strip so the large readout can never sit under it. */
+    height: 100vh; box-sizing: border-box;
+    padding-top: calc(var(--nav-h) + 16px);
   }
 
   @media (max-width: 760px) {
@@ -562,8 +589,9 @@
   /* DOWNLOAD */
   .download { text-align: center; padding: 150px 0; position: relative; overflow: hidden; }
   .download-glow {
-    position: absolute; left: 50%; bottom: -180px; transform: translateX(-50%);
-    width: 1100px; height: 700px;
+    position: absolute; left: 50%; bottom: -180px;
+    transform: translateX(-50%) translate3d(0, var(--py, 0px), 0);
+    width: min(1400px, 120vw); height: 700px;
     background: radial-gradient(circle, rgba(230,57,70,0.28) 0%, rgba(230,57,70,0.08) 38%, transparent 68%);
     pointer-events: none; will-change: transform;
   }
@@ -576,11 +604,11 @@
   .download-barbell {
     position: absolute; left: 50%; top: 6%; transform: translateX(-50%);
     display: flex; align-items: center; justify-content: center;
-    width: 100%; max-width: 900px; opacity: .16; pointer-events: none; z-index: 1;
+    width: 100%; max-width: min(1320px, 94vw); opacity: .16; pointer-events: none; z-index: 1;
     filter: drop-shadow(0 0 60px rgba(245,185,66,.4));
   }
-  .download-barbell .bb-bar { width: min(20vw, 320px); }
-  .download-barbell .bb-plate { width: min(4vw, 56px); flex: none; }
+  .download-barbell .bb-bar { width: min(30vw, 470px); }
+  .download-barbell .bb-plate { width: min(5.4vw, 76px); flex: none; }
   .download-barbell .bb-plates { gap: 6px; }
   @media (max-width: 760px) { .download-barbell { display: none; } }
 
@@ -912,7 +940,7 @@
   <nav id="nav">
     <div class="nav-inner">
       <a href="#top" class="nav-mark">
-        <img class="ico" src="assets/setpr-icon.png" alt="SetPR app icon" />
+        <img class="ico" src="assets/setpr-icon.png" alt="SetPR app icon" width="32" height="32" />
         SetPR
       </a>
       <div class="nav-links">
@@ -961,12 +989,13 @@
 
         <div class="hero-phone-stage" data-parallax="-0.12" data-anim data-d="3">
           <div class="hero-phone-glow"></div>
-          <div class="hero-video-shell">
-            <video id="hero-video" autoplay muted loop playsinline preload="metadata" poster="assets/hero-phone-poster.jpg" aria-label="SetPR app preview">
-              <source src="assets/hero-phone.mp4" type="video/mp4" />
-            </video>
-            <div class="hero-video-hud top"><span class="rec">Live session</span><span>SetPR / 01</span></div>
-            <div class="hero-video-hud bottom"><span>Build your next PR</span><span class="time">00:06</span></div>
+          <div class="hero-media-shell">
+            <picture>
+              <source srcset="assets/hero-barbell.webp" type="image/webp" />
+              <img id="hero-media" src="assets/hero-barbell.jpg" width="520" height="520" alt="Loaded SetPR barbell, calibrated red and gold plates" />
+            </picture>
+            <div class="hero-media-hud top"><span class="hud-dot">Loaded</span><span>SetPR / 01</span></div>
+            <div class="hero-media-hud bottom"><span>Build your next PR</span><span class="hud-value">405 LB</span></div>
           </div>
         </div>
       </div>
@@ -1357,7 +1386,7 @@
     </div>
     <div class="wrap">
       <span class="free-pill" data-anim>● Free to start — no trial, no card</span>
-      <img class="ico-big" src="assets/setpr-icon.png" alt="SetPR app icon" data-anim data-d="0" />
+      <img class="ico-big" src="assets/setpr-icon.png" alt="SetPR app icon" width="92" height="92" data-anim data-d="0" />
       <h2 data-anim data-d="1">Stop guessing.<br>Start setting <span class="red">PRs</span>.</h2>
       <p class="sub" data-anim data-d="2">Download SetPR and make every session count. Free on the App&nbsp;Store, with Premium when you want the coach.</p>
       <div class="hero-ctas" data-anim data-d="3">
@@ -1374,7 +1403,7 @@
     <div class="wrap">
       <div class="foot-grid">
         <div class="foot-brand">
-          <div class="foot-mark"><img class="ico" src="assets/setpr-icon.png" alt="SetPR app icon" /><span class="nm">SetPR</span></div>
+          <div class="foot-mark"><img class="ico" src="assets/setpr-icon.png" alt="SetPR app icon" width="42" height="42" /><span class="nm">SetPR</span></div>
           <p>The strength tracker for lifters who chase numbers. Every rep. Every PR. Tracked.</p>
         </div>
         <div class="foot-cols">
@@ -1407,24 +1436,13 @@
     </div>
   </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/motion@12.42.2/dist/motion.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.9/dist/lenis.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.15/dist/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.15/dist/ScrollTrigger.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/animejs/dist/bundles/anime.umd.min.js"></script>
   <script>
     (function () {
       const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       const ease = 'cubic-bezier(.2,.75,.2,1)';
-      const heroVideo = document.getElementById('hero-video');
-      const heroVideoTime = document.querySelector('.hero-video-hud .time');
-
-      if (reduce) {
-        heroVideo.pause();
-      } else {
-        heroVideo.addEventListener('timeupdate', () => {
-          heroVideoTime.textContent = `00:${String(Math.ceil(heroVideo.currentTime)).padStart(2, '0')}`;
-        });
-      }
 
       // ---------- META IN-APP BROWSER TIP ----------
       const isMetaInAppBrowser = (userAgent = '') => /Instagram|FBAN|FBAV/i.test(userAgent);
@@ -1479,9 +1497,8 @@
       }
 
       function applyMotionEnhancements() {
-        if (reduce || !window.Motion) return;
-        const { animate, stagger } = window.Motion;
-        animate('[data-motion]', { opacity: [0, 1], y: [14, 0] }, { delay: stagger(0.12), duration: 0.7, ease: 'ease-out' });
+        if (reduce || !window.gsap) return;
+        gsap.from('[data-motion]', { opacity: 0, y: 14, duration: 0.7, ease: 'power2.out', stagger: 0.12 });
       }
 
       function applyGsapScrollEnhancements() {
@@ -1501,6 +1518,11 @@
           duration: 0.8,
           ease: 'power3.out',
           stagger: 0.12,
+          // .phone-col is ALSO a [data-parallax] element. Without clearProps the
+          // tween's final inline `transform` outlives it and permanently beats
+          // the CSS var the parallax writes, freezing the phones at a stale
+          // offset. Clearing hands transform control back to parallax.
+          clearProps: 'transform',
           scrollTrigger: { trigger: '#screens', start: 'top 68%', once: true },
         });
       }
@@ -1527,9 +1549,9 @@
                 trigger: stage,
                 start: 'top top',
                 end: '+=3200',
-                scrub: 0.6,
+                scrub: true,
                 pin: true,
-                anticipatePin: 1,
+                refreshPriority: 1,
               },
             });
 
@@ -1591,30 +1613,42 @@
               if (capNum) tl.to(caption(capNum), { opacity: 0, duration: 0.3 }, holdLabel);
             }
 
+            // Gold state is driven from scroll progress, NOT a GSAP className
+            // tween: `className: '+=is-gold'` overwrote the whole class attribute
+            // (leaving literally "+=is-gold"), which stripped .barbell-hero and
+            // .is-desktop-fx mid-scroll and dropped the readout under the nav.
+            let goldAt = 1;
             const tl = gsap.timeline({
               scrollTrigger: {
                 trigger: stage,
                 start: 'top top',
-                end: '+=4400',
-                scrub: 0.6,
+                end: '+=5600',
+                scrub: true,
                 pin: true,
-                anticipatePin: 1,
+                refreshPriority: 1,
+                onUpdate: (self) => {
+                  section.classList.toggle('is-gold', self.progress >= goldAt);
+                },
               },
             });
 
             tl.addLabel('s0');
-            loadStage(tl, 's0+=0.2', 1, 135, 1, 'hold1');
+            loadStage(tl, 's0+=0.05', 1, 135, 1, 'hold1');
             loadStage(tl, 'hold1+=0.2', 2, 225, 2, 'hold2');
             loadStage(tl, 'hold2+=0.2', 3, 315, 3, 'hold3');
             loadStage(tl, 'hold3+=0.2', 4, 365, 4, 'hold4');
 
-            tl.to(counter, { val: 405, duration: 0.8, ease: 'power2.out', onUpdate: setNum }, 'hold4+=0.2')
-              .to(plate(5), { x: 0, opacity: 1, duration: 0.8, ease: 'power2.out' }, '<')
-              .to(numEl, { color: '#F5B942', duration: 0.5 }, '<0.3')
-              .set(section, { className: '+=is-gold' }, '<')
-              .to(flash, { opacity: 0.9, duration: 0.18 }, '<')
+            // Climax gets a full stage's weight (was 0.8 vs 1.0) plus a real
+            // dwell tween so 405/gold actually holds before the pin releases.
+            tl.addLabel('climax', 'hold4+=0.2')
+              .to(counter, { val: 405, duration: 1, ease: 'power2.out', onUpdate: setNum }, 'climax')
+              .to(plate(5), { x: 0, opacity: 1, duration: 1, ease: 'power2.out' }, '<')
+              .to(numEl, { color: '#F5B942', duration: 0.5 }, '<0.4')
+              .to(flash, { opacity: 0.9, duration: 0.18 }, '<0.1')
               .to(flash, { opacity: 0, duration: 0.6 }, '>')
-              .addLabel('end', '+=0.4');
+              .to({}, { duration: 1.1 });
+
+            goldAt = (tl.labels.climax + 0.4) / tl.duration();
 
             return () => { section.classList.remove('is-desktop-fx', 'is-gold'); numEl.textContent = '405'; };
           },
@@ -1632,13 +1666,13 @@
       }
 
       function applyAnimeEnhancements() {
-        if (reduce || !window.anime) return;
-        anime.animate('.anime-meter i', {
-          scaleX: [0.18, 1, 0.54],
-          duration: 1800,
-          ease: 'inOut(3)',
-          loop: true,
-          alternate: true,
+        if (reduce || !window.gsap) return;
+        gsap.fromTo('.anime-meter i', { scaleX: 0.18 }, {
+          scaleX: 1,
+          duration: 1.8,
+          ease: 'power2.inOut',
+          repeat: -1,
+          yoyo: true,
         });
       }
 
@@ -1663,13 +1697,64 @@
           playIn(el, 60 + d * 90);
         });
       }
+      // ---------- SMOOTH SCROLL (Lenis) wired into GSAP ScrollTrigger ----------
+      // One unified rAF loop: GSAP ticker drives Lenis, Lenis drives ScrollTrigger.
+      // Skipped entirely under reduced-motion (native scroll respected).
+      let lenis = null;
+      function setupSmoothScroll() {
+        if (reduce || !window.Lenis || !window.gsap || !window.ScrollTrigger) return;
+        gsap.registerPlugin(ScrollTrigger);
+        // lerp 0.2 → decay rate 12/s (τ ≈ 83ms). Tuned to match the response curve
+        // measured on midlife.engineering (~211ms to 90%, ~575ms settle). Lower
+        // values (e.g. Lenis' 0.1 default) read as laggy/rubbery on trackpad.
+        lenis = new Lenis({ lerp: 0.2, wheelMultiplier: 1, smoothWheel: true });
+
+        // Mouse wheels emit large discrete integer ticks at low frequency;
+        // trackpads emit small/fractional deltas at ~120Hz. Measured, one mouse
+        // flick travelled 3.4x further than a trackpad flick (1200px vs 350px),
+        // consuming 1.36 scroll-driven stages per gesture and blowing past the
+        // animation. Scale mouse ticks down so both inputs read comparably.
+        const WHEEL_MOUSE = 0.65, WHEEL_TRACKPAD = 1;
+        let lastWheelAt = 0;
+        // Capture phase so the multiplier is set before Lenis handles the event.
+        window.addEventListener('wheel', (e) => {
+          const now = performance.now(), gap = now - lastWheelAt;
+          lastWheelAt = now;
+          const d = Math.abs(e.deltaY);
+          const fractional = !Number.isInteger(e.deltaY);
+          const mouseLike = !fractional && d >= 100 && gap > 30;
+          const padLike = fractional || d < 50 || gap < 20;
+          if (mouseLike) lenis.virtualScroll.wheelMultiplier = WHEEL_MOUSE;
+          else if (padLike) lenis.virtualScroll.wheelMultiplier = WHEEL_TRACKPAD;
+        }, { passive: true, capture: true });
+        lenis.on('scroll', ScrollTrigger.update);
+        gsap.ticker.add((time) => { lenis.raf(time * 1000); });
+        gsap.ticker.lagSmoothing(0);
+      }
+      setupSmoothScroll();
+
       if (reduce) revealHero();
       applyMotionEnhancements();
-      applyGsapScrollEnhancements();
+      // Pins MUST be created before the plain reveal triggers. ScrollTrigger
+      // refreshes in creation order (absent refreshPriority), so triggers made
+      // before a pin never receive the pin-spacer push and end up thousands of
+      // px off. Both pins also carry refreshPriority so any later refresh keeps
+      // measuring them first.
       applyDisassemblyScroll();
       applyBarbellScroll();
+      applyGsapScrollEnhancements();
       applyAnimeEnhancements();
       applyReactBitsEnhancements();
+
+      // The two pinned sections insert ~8800px of pin-spacer, which moves every
+      // section below them. Triggers created before the pins (the .fcard and
+      // .phone-col reveals) keep pre-pin coordinates and otherwise fire ~9000px
+      // early, off-screen. Refresh once everything exists, and again on load
+      // when lazy images have settled their final heights.
+      if (!reduce && window.ScrollTrigger) {
+        ScrollTrigger.refresh();
+        window.addEventListener('load', () => ScrollTrigger.refresh());
+      }
 
       // ---------- scroll reveal for the rest ----------
       const io = new IntersectionObserver((entries) => {
@@ -1685,31 +1770,57 @@
 
       // ---------- NAV scrolled state ----------
       const nav = document.getElementById('nav');
-      const onScrollNav = () => nav.classList.toggle('scrolled', window.scrollY > 24);
+      const onScrollNav = (y) => nav.classList.toggle('scrolled', (y != null ? y : window.scrollY) > 24);
       onScrollNav();
 
-      // ---------- PARALLAX ----------
+      // ---------- PARALLAX (cached layout, zero per-frame reflow) ----------
+      // Positions are measured once (and on resize / ScrollTrigger refresh), so
+      // each frame only writes transforms — no getBoundingClientRect in the loop.
       const players = [...document.querySelectorAll('[data-parallax]')].map((el) => ({
-        el, speed: parseFloat(el.dataset.parallax)
+        el, speed: parseFloat(el.dataset.parallax), docTop: 0, h: 0
       }));
-      let ticking = false;
-      function applyParallax() {
-        const vh = window.innerHeight;
-        players.forEach(({ el, speed }) => {
-          const rect = el.getBoundingClientRect();
-          const center = rect.top + rect.height / 2;
-          const offset = (center - vh / 2) * speed;
-          el.style.transform = `translate3d(0, ${offset.toFixed(1)}px, 0)`;
+      let vh = window.innerHeight;
+      function measureParallax() {
+        vh = window.innerHeight;
+        const sy = window.scrollY;
+        // Batch reads: neutralize transform so measurement is layout-true, read, then restore next render.
+        players.forEach((p) => {
+          const r = p.el.getBoundingClientRect();
+          p.docTop = r.top + sy - (p._applied || 0);
+          p.h = r.height;
         });
-        ticking = false;
       }
-      function onScroll() {
-        onScrollNav();
-        if (!ticking && !reduce) { requestAnimationFrame(applyParallax); ticking = true; }
+      // Offset grows with distance from the viewport, so a far-off element could
+      // be displaced 2000px+ and render across neighbouring sections. Anything
+      // past MAX is off-screen anyway, so clamping is visually a no-op and keeps
+      // every element inside its own section.
+      const MAX_PARALLAX = 140;
+      function renderParallax(scrollY) {
+        for (let i = 0; i < players.length; i++) {
+          const p = players[i];
+          const center = p.docTop + p.h / 2 - scrollY;
+          let offset = (center - vh / 2) * p.speed;
+          if (offset > MAX_PARALLAX) offset = MAX_PARALLAX;
+          else if (offset < -MAX_PARALLAX) offset = -MAX_PARALLAX;
+          p._applied = offset;
+          p.el.style.setProperty('--py', `${offset.toFixed(1)}px`);
+        }
       }
-      window.addEventListener('scroll', onScroll, { passive: true });
-      window.addEventListener('resize', applyParallax);
-      if (!reduce) applyParallax();
+
+      if (!reduce && lenis) {
+        measureParallax();
+        renderParallax(window.scrollY);
+        lenis.on('scroll', (e) => {
+          const y = (e && typeof e.scroll === 'number') ? e.scroll : window.scrollY;
+          onScrollNav(y);
+          renderParallax(y);
+        });
+        window.addEventListener('resize', measureParallax);
+        if (window.ScrollTrigger) ScrollTrigger.addEventListener('refresh', measureParallax);
+      } else {
+        // Reduced-motion / no-Lenis fallback: keep only the lightweight nav toggle.
+        window.addEventListener('scroll', () => onScrollNav(), { passive: true });
+      }
 
       // ---------- POLISHED POINTER DEPTH ----------
       const heroGrid = document.querySelector('.hero-grid');
@@ -1734,8 +1845,12 @@
           const target = document.querySelector(id);
           if (!target) return;
           e.preventDefault();
-          const y = target.getBoundingClientRect().top + window.scrollY - 72;
-          window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+          if (lenis) {
+            lenis.scrollTo(target, { offset: -72 });
+          } else {
+            const y = target.getBoundingClientRect().top + window.scrollY - 72;
+            window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+          }
           history.replaceState(null, '', id);
         });
       });

@@ -52,25 +52,35 @@ test('landing page includes the accessible Meta browser fallback and keeps the A
   }
 });
 
-test('landing page uses a pinned Motion enhancement without a blocking intro', () => {
-  assert.match(page, /motion@12\.42\.2\/dist\/motion\.js/);
+test('landing page keeps the hero entrance enhancement without a blocking intro', () => {
   assert.match(page, /class="hero-system"/);
   assert.match(page, /function applyMotionEnhancements\(\)/);
+  // The entrance runs on GSAP now. Motion.js was dropped in the hero rebuild
+  // because GSAP was already loaded and did the same job; guard the removal so
+  // a fourth animation library cannot drift back in.
+  assert.doesNotMatch(page, /motion@[\d.]+\/dist\/motion\.js/);
 });
 
-test('landing page includes GSAP, Anime.js, and React Bits-style enhancement hooks', () => {
+test('landing page includes GSAP, Lenis, and React Bits-style enhancement hooks', () => {
   assert.match(page, /gsap@3\.15\/dist\/gsap\.min\.js/);
   assert.match(page, /gsap@3\.15\/dist\/ScrollTrigger\.min\.js/);
-  assert.match(page, /animejs\/dist\/bundles\/anime\.umd\.min\.js/);
+  assert.match(page, /lenis@[\d.]+\/dist\/lenis\.min\.js/);
   assert.match(page, /function applyGsapScrollEnhancements\(\)/);
   assert.match(page, /function applyAnimeEnhancements\(\)/);
   assert.match(page, /function applyReactBitsEnhancements\(\)/);
   assert.match(page, /reactbits-magnetic/);
+  // Anime.js was folded into GSAP in the same rebuild.
+  assert.doesNotMatch(page, /animejs\/dist\/bundles\/anime\.umd\.min\.js/);
 });
 
-test('landing page uses the supplied phone video as an accessible cinematic hero', () => {
-  assert.match(page, /<video id="hero-video"[^>]*autoplay[^>]*muted[^>]*loop[^>]*playsinline/);
-  assert.match(page, /src="assets\/hero-phone\.mp4"/);
-  assert.match(page, /poster="assets\/hero-phone-poster\.jpg"/);
-  assert.match(page, /aria-label="SetPR app preview"/);
+test('landing page uses the barbell still as an accessible cinematic hero', () => {
+  assert.match(page, /<source srcset="assets\/hero-barbell\.webp" type="image\/webp"/);
+  assert.match(page, /<img id="hero-media"[^>]*src="assets\/hero-barbell\.jpg"/);
+  // Intrinsic size is what stops the hero reflowing the fold while it decodes.
+  assert.match(page, /<img id="hero-media"[^>]*width="520"[^>]*height="520"/);
+  // The <video> carried aria-label; an <img> needs a non-empty alt instead.
+  assert.match(page, /<img id="hero-media"[^>]*alt="[^"]+"/);
+  // The phone video it replaced is gone, markup and assets both.
+  assert.doesNotMatch(page, /<video id="hero-video"/);
+  assert.doesNotMatch(page, /hero-phone[^"]*\.(?:mp4|jpg)/);
 });
