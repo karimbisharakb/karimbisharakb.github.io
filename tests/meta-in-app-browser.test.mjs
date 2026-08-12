@@ -37,10 +37,19 @@ test('landing page includes the accessible Meta browser fallback and keeps the A
   assert.match(page, /tap ··· in the top right, then ‘Open in Browser’/);
   assert.match(page, /aria-label="Dismiss browser tip"/);
   assert.match(page, /sessionStorage\.setItem\('setpr-meta-browser-banner-dismissed', 'true'\)/);
-  assert.equal(
-    (page.match(/https:\/\/apps\.apple\.com\/app\/setpr-lift-tracker\/id6778556303/g) || []).length,
-    2,
+
+  // Counting every apps.apple.com occurrence was brittle: it asserted exactly 2
+  // and broke as soon as the pricing section added its two CTAs and the
+  // MobileApplication JSON-LD added a downloadUrl. Adding a CTA is not a
+  // regression. Sending one to the wrong listing is, so assert that instead.
+  const appStoreLinks = page.match(/href="https:\/\/apps\.apple\.com[^"]*"/g) || [];
+  assert.ok(
+    appStoreLinks.length >= 2,
+    `expected the hero and download App Store CTAs, found ${appStoreLinks.length}`,
   );
+  for (const link of appStoreLinks) {
+    assert.match(link, /^href="https:\/\/apps\.apple\.com\/app\/setpr-lift-tracker\/id6778556303"$/);
+  }
 });
 
 test('landing page uses a pinned Motion enhancement without a blocking intro', () => {
